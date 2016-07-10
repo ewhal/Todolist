@@ -16,6 +16,8 @@ func rootHandler(w http.responsewriter, r *http.request) {
 }
 
 func todoHandler(w http.responsewriter, r *http.request) {
+	vars := mux.Vars(r)
+	todo := vars["id"]
 
 }
 
@@ -24,22 +26,32 @@ func addHandler(w http.responsewriter, r *http.request) {
 }
 
 func editHandler(w http.responsewriter, r *http.request) {
+	vars := mux.Vars(r)
+	todo := vars["id"]
 
 }
 
 func delHandler(w http.responsewriter, r *http.request) {
+	vars := mux.Vars(r)
+	todo := vars["id"]
 
 }
 
 func finishHandler(w http.responsewriter, r *http.request) {
+	vars := mux.Vars(r)
+	todo := vars["id"]
 
 }
 
 func userHandler(w http.responsewriter, r *http.request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
 
 }
 
 func userDelHandler(w http.responsewriter, r *http.request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
 
 }
 
