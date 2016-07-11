@@ -75,10 +75,26 @@ func userDelHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		err := templates.ExecuteTemplate(w, "login.html", "")
+		checkErr(err)
+	case "POST":
+		email := r.FormValue("email")
+		pass := r.FormValue("pass")
+	}
 
 }
 
 func registerHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		err := templates.ExecuteTemplate(w, "login.html", "")
+		checkErr(err)
+	case "POST":
+		email := r.FormValue("email")
+		pass := r.FormValue("pass")
+	}
 
 }
 
