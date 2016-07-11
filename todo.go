@@ -22,6 +22,15 @@ type User struct {
 	Password string
 }
 
+type Tasks struct {
+	ID      int    `json:"id"`
+	Title   string `json:"title"`
+	Task    string `json:"task"`
+	Created string `json:"created"`
+	DueDate string `json:"duedate"`
+	Email   string `json:"email"`
+}
+
 func checkErr(err error) {
 	if err != nil {
 		log.Println(err)
