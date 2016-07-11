@@ -14,7 +14,7 @@ const (
 	LENGTH = 12
 )
 
-var templates = template.Must(template.ParseFiles("static/index.html"))
+var templates = template.Must(template.ParseFiles("static/index.html", "static/login.html", "static/register.html", "static/todo.html", "static/edit.html", "static/add.html"))
 
 func checkErr(err error) {
 	if err != nil {
