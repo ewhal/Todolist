@@ -41,6 +41,17 @@ func todoHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func addHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		err := templates.ExecuteTemplate(w, "add.html", "")
+		checkErr(err)
+
+	case "POST":
+		title := r.FormValue("title")
+		task := r.FormValue("task")
+		duedate := r.FormValue("duedate")
+
+	}
 
 }
 
