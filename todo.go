@@ -20,59 +20,61 @@ func checkErr(err error) {
 
 var templates = template.Must(template.ParseFiles("static/index.html"))
 
-func rootHandler(w http.responsewriter, r *http.request) {
+func rootHandler(w http.ResponseWriter, r *http.Request) {
+	err := templates.ExecuteTemplate(w, "index.html", "")
+	checkErr(err)
 
 }
 
-func todoHandler(w http.responsewriter, r *http.request) {
+func todoHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	todo := vars["id"]
 
 }
 
-func addHandler(w http.responsewriter, r *http.request) {
+func addHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func editHandler(w http.responsewriter, r *http.request) {
+func editHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	todo := vars["id"]
 
 }
 
-func delHandler(w http.responsewriter, r *http.request) {
+func delHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	todo := vars["id"]
 
 }
 
-func finishHandler(w http.responsewriter, r *http.request) {
+func finishHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	todo := vars["id"]
 
 }
 
-func userHandler(w http.responsewriter, r *http.request) {
+func userHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
 }
 
-func userDelHandler(w http.responsewriter, r *http.request) {
+func userDelHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
 }
 
-func loginHandler(w http.responsewriter, r *http.request) {
+func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func registerHandler(w http.responsewriter, r *http.request) {
+func registerHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func logoutHandler(w http.responsewriter, r *http.request) {
+func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	cookie := &http.Cookie{
 		Name:   "session",
 		Value:  "",
@@ -84,7 +86,7 @@ func logoutHandler(w http.responsewriter, r *http.request) {
 
 }
 
-func resetHandler(w http.responsewriter, r *http.request) {
+func resetHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
