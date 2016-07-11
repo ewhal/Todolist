@@ -37,6 +37,8 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 func todoHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	todo := vars["id"]
+	err := templates.ExecuteTemplate(w, "todo.html", "")
+	checkErr(err)
 
 }
 
