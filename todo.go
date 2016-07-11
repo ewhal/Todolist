@@ -11,6 +11,12 @@ const (
 	PORT = ":8080"
 )
 
+checkErr(err error) {
+	if err != nil {
+		log.Println(err)
+	}
+} 
+
 func rootHandler(w http.responsewriter, r *http.request) {
 
 }
