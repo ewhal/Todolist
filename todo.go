@@ -31,6 +31,10 @@ type Tasks struct {
 	Email   string `json:"email"`
 }
 
+type Page struct {
+	Tasks []Tasks
+}
+
 func checkErr(err error) {
 	if err != nil {
 		log.Println(err)
