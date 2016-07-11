@@ -5,12 +5,16 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/dchest/uniuri"
 	"github.com/gorilla/mux"
 )
 
 const (
-	PORT = ":8080"
+	PORT   = ":8080"
+	LENGTH = 12
 )
+
+var templates = template.Must(template.ParseFiles("static/index.html"))
 
 func checkErr(err error) {
 	if err != nil {
@@ -18,7 +22,11 @@ func checkErr(err error) {
 	}
 }
 
-var templates = template.Must(template.ParseFiles("static/index.html"))
+func genName() string {
+	name := uniuri.NewLen(LENGTH)
+
+	return name
+}
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	err := templates.ExecuteTemplate(w, "index.html", "")
