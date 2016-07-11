@@ -16,6 +16,12 @@ const (
 
 var templates = template.Must(template.ParseFiles("static/index.html", "static/login.html", "static/register.html", "static/todo.html", "static/edit.html", "static/add.html"))
 
+type User struct {
+	ID       int
+	Email    string
+	Password string
+}
+
 func checkErr(err error) {
 	if err != nil {
 		log.Println(err)
