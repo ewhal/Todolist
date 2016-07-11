@@ -1,9 +1,13 @@
 package main
 
 import (
+	"database/sql"
+	"html"
 	"html/template"
 	"log"
 	"net/http"
+
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/dchest/uniuri"
 	"github.com/gorilla/mux"
@@ -56,7 +60,8 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 func todoHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	todo := vars["id"]
-	err := templates.ExecuteTemplate(w, "todo.html", "")
+	p := Page{}
+	err := templates.ExecuteTemplate(w, "todo.html", &p)
 	checkErr(err)
 
 }
@@ -126,6 +131,18 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	case "POST":
 		email := r.FormValue("email")
 		pass := r.FormValue("pass")
+		db, err := sql.Open("mysql", DATABASE)
+		checkErr(err)
+
+		defer db.Close()
+		query, err := db.Prepare("INSERT into users(email, password) values(?, ?)")
+		checkErr(err)
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
+		checkErr(err)
+
+		_, err = query.Exec(html.EscapeString(email), hashedPassword)
+		checkErr(err)
+		http.Redirect(w, r, "/login", 302)
 	}
 
 }
