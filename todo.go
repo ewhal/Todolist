@@ -1,6 +1,7 @@
 package main
 
 import (
+	"html/template"
 	"log"
 	"net/http"
 
@@ -11,11 +12,13 @@ const (
 	PORT = ":8080"
 )
 
-checkErr(err error) {
+func checkErr(err error) {
 	if err != nil {
 		log.Println(err)
 	}
-} 
+}
+
+var templates = template.Must(template.ParseFiles("static/index.html"))
 
 func rootHandler(w http.responsewriter, r *http.request) {
 
