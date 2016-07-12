@@ -134,6 +134,46 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	case "POST":
 		email := r.FormValue("email")
 		pass := r.FormValue("pass")
+		// open db connection
+		db, err := sql.Open("mysql", DATABASE)
+		checkErr(err)
+
+		defer db.Close()
+
+		// declare variables for database results
+		var hashedPassword []byte
+		var level, name string
+		// read hashedPassword, name and level into variables
+		err = db.QueryRow("select password from users where email=?", html.EscapeString(email)).Scan(&hashedPassword, &name, &level)
+		if err == sql.ErrNoRows {
+			http.Redirect(w, r, "/login", 303)
+			return
+		}
+		checkErr(err)
+
+		// compare bcrypt hash to userinput password
+		err = bcrypt.CompareHashAndPassword(hashedPassword, []byte(password))
+		if err == nil {
+			// prepare cookie
+			value := map[string]string{
+				"email": email,
+			}
+			// encode variables into cookie
+			if encoded, err := cookieHandler.Encode("session", value); err == nil {
+				cookie := &http.Cookie{
+					Name:  "session",
+					Value: encoded,
+					Path:  "/",
+				}
+				// set user cookie
+				http.SetCookie(w, cookie)
+			}
+			// Redirect to home page
+			http.Redirect(w, r, "/", 302)
+		}
+		// Redirect to login page
+		http.Redirect(w, r, "/login", 302)
+
 	}
 
 }
