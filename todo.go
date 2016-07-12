@@ -121,8 +121,24 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func userDelHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id := vars["id"]
+	switch r.Method {
+	case "GET":
+
+	case "POST", "DEL":
+		pass := r.FormValue("password")
+
+		db, err := sql.Open("mysql", DATABASE)
+		checkErr(err)
+
+		defer db.Close()
+
+		query, err := db.Prepare("delete from users where email=? and password=?")
+		checkErr(err)
+
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
+		checkErr(err)
+
+	}
 
 }
 
