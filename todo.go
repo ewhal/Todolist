@@ -47,7 +47,14 @@ func checkErr(err error) {
 
 func genName() string {
 	name := uniuri.NewLen(LENGTH)
+	db, err := sql.Open("mysql", DATABASE)
+	checkErr(err)
 
+	_, err := db.QueryRow("select name from tasks where name=?", name)
+	if err != sql.ErrNoRows {
+		genName()
+	}
+	checkErr(err)
 	return name
 }
 

@@ -7,6 +7,7 @@ CREATE TABLE `users` (
 
 CREATE TABLE `tasks` (
   `id` int(10) unsigned NOT NULL auto_increment,
+  `name` longtext,
   `title` longtext,
   `task` longtext,
   `created` DATETIME,
