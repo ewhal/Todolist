@@ -142,9 +142,8 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 		// declare variables for database results
 		var hashedPassword []byte
-		var level, name string
 		// read hashedPassword, name and level into variables
-		err = db.QueryRow("select password from users where email=?", html.EscapeString(email)).Scan(&hashedPassword, &name, &level)
+		err = db.QueryRow("select password from users where email=?", html.EscapeString(email)).Scan(&hashedPassword)
 		if err == sql.ErrNoRows {
 			http.Redirect(w, r, "/login", 303)
 			return
