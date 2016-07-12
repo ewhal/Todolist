@@ -37,7 +37,7 @@ type Tasks struct {
 }
 
 type Page struct {
-	Tasks []Tasks
+	Tasks []Tasks `json:"tasks"`
 }
 
 func checkErr(err error) {
