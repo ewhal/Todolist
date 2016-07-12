@@ -234,7 +234,7 @@ func main() {
 	router.HandleFunc("/todo/edit/{id}", editHandler)
 	router.HandleFunc("/todo/del/{id}", delHandler)
 
-	router.HandleFunc("/finish/{id}", finishHandler)
+	router.HandleFunc("/todo/finish/{id}", finishHandler)
 
 	router.HandleFunc("/user", userHandler)
 	router.HandleFunc("/user/{id}", userHandler)
