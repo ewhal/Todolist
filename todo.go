@@ -84,11 +84,12 @@ func addHandler(w http.ResponseWriter, r *http.Request) {
 		title := r.FormValue("title")
 		task := r.FormValue("task")
 		duedate := r.FormValue("duedate")
+		name := genName()
 
 		db, err := sql.Open("mysql", DATABASE)
 		checkErr(err)
 		query, err := db.Prepare("insert into tasks(name, title, task, duedate, created)")
-		err := query.Exec(html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), time.Now().Format("2016-02-01 15:12:52"))
+		err := query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), time.Now().Format("2016-02-01 15:12:52"))
 		checkErr(err)
 		http.Redirect(w, r, "/add", 302)
 
