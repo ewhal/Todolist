@@ -123,7 +123,8 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 func userDelHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-
+		err := templates.ExecuteTemplate(w, "deluser.html", "")
+		checkErr(err)
 	case "POST", "DEL":
 		pass := r.FormValue("password")
 
