@@ -90,6 +90,7 @@ func addHandler(w http.ResponseWriter, r *http.Request) {
 		query, err := db.Prepare("insert into tasks(name, title, task, duedate, created)")
 		err := query.Exec(html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), time.Now().Format("2016-02-01 15:12:52"))
 		checkErr(err)
+		http.Redirect(w, r, "/add", 302)
 
 	}
 
@@ -149,14 +150,21 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 		checkErr(err)
 
 		defer db.Close()
-		query, err := db.Prepare("INSERT into users(email, password) values(?, ?)")
+		_, err := db.QueryRow("select email from users where email=?", html.EscapeString(email))
 		checkErr(err)
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
-		checkErr(err)
+		if err == sql.ErrNoRows {
+			query, err := db.Prepare("INSERT into users(email, password) values(?, ?)")
+			checkErr(err)
+			hashedPassword, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
+			checkErr(err)
 
-		_, err = query.Exec(html.EscapeString(email), hashedPassword)
-		checkErr(err)
-		http.Redirect(w, r, "/login", 302)
+			_, err = query.Exec(html.EscapeString(email), hashedPassword)
+			checkErr(err)
+			http.Redirect(w, r, "/login", 302)
+
+		}
+		http.Redirect(w, r, "/register", 302)
+
 	}
 
 }
