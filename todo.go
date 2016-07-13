@@ -91,7 +91,27 @@ func getEmail(r *http.Request) (string, error) {
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
-	err := templates.ExecuteTemplate(w, "index.html", "")
+
+	db, err := sql.Open("mysql", DATABASE)
+	checkErr(err)
+
+	query, err := db.Prepare("select name, title, task, created, duedate from tasks where email=? order by duedate desc")
+	checkErr(err)
+
+	email := getEmail(r)
+	rows, err := query.Exec(email)
+	b := Page{Tasks: Tasks{}}
+
+	for rows.Next() {
+		res := Tasks{}
+		rows.scan(&res.Name, &res.Title, &res.Task, &res.Created, &res.DueDate)
+
+		b.Tasks = append(b.Tasks, res)
+	}
+
+	checkErr(err)
+
+	err = templates.ExecuteTemplate(w, "index.html", &b)
 	checkErr(err)
 
 }
