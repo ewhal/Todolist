@@ -132,13 +132,23 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func todoHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	todo := vars["id"]
+
+	db, err := sql.Open("mysql", DATABASE)
+	checkErr(err)
+
+	rows, err := db.Query("select public from tasks where name=?", html.EscapeString(todo))
+	var public bool
+	for rows.Next() {
+		rows.Scan(&public)
+	}
+
 	if loggedIn(r) != true && public == false {
 		http.Redirect(w, r, "/login", 302)
 	}
-	vars := mux.Vars(r)
-	todo := vars["id"]
 	p := Page{}
-	err := templates.ExecuteTemplate(w, "todo.html", &p)
+	err = templates.ExecuteTemplate(w, "todo.html", &p)
 	checkErr(err)
 
 }
