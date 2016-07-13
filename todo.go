@@ -58,6 +58,23 @@ func genName() string {
 	checkErr(err)
 	return name
 }
+func loggedIn(r *http.Request) bool {
+	cookie, err := r.Cookie("session")
+	cookieValue := make(map[string]string)
+	if err != nil {
+		return false
+	}
+	err := cookieHandler.Decode("session", cookie.Value, &cookieValue)
+	if err != nil {
+		return false
+	}
+	email := cookieValue["email"]
+	if email != "" {
+		return false
+	}
+	return true
+
+}
 
 func getEmail(r *http.Request) (string, error) {
 	cookie, err := r.Cookie("session")
