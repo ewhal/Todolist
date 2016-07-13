@@ -82,7 +82,7 @@ func getEmail(r *http.Request) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	err := cookieHandler.Decode("session", cookie.Value, &cookieValue)
+	err = cookieHandler.Decode("session", cookie.Value, &cookieValue)
 	if err != nil {
 		return "", err
 	}
@@ -91,6 +91,9 @@ func getEmail(r *http.Request) (string, error) {
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
+	if loggedIn(r) != true {
+		http.Redirect(w, r, "/login", 302)
+	}
 
 	db, err := sql.Open("mysql", DATABASE)
 	checkErr(err)
@@ -117,6 +120,9 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func todoHandler(w http.ResponseWriter, r *http.Request) {
+	if loggedIn(r) != true {
+		http.Redirect(w, r, "/login", 302)
+	}
 	vars := mux.Vars(r)
 	todo := vars["id"]
 	p := Page{}
@@ -126,6 +132,9 @@ func todoHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func addHandler(w http.ResponseWriter, r *http.Request) {
+	if loggedIn(r) != true {
+		http.Redirect(w, r, "/login", 302)
+	}
 	switch r.Method {
 	case "GET":
 		err := templates.ExecuteTemplate(w, "add.html", "")
@@ -140,7 +149,7 @@ func addHandler(w http.ResponseWriter, r *http.Request) {
 		db, err := sql.Open("mysql", DATABASE)
 		checkErr(err)
 		query, err := db.Prepare("insert into tasks(name, title, task, duedate, created, email)")
-		err := query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), time.Now().Format("2016-02-01 15:12:52"), email)
+		err = query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), time.Now().Format("2016-02-01 15:12:52"), email)
 		checkErr(err)
 
 	}
@@ -148,30 +157,45 @@ func addHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func editHandler(w http.ResponseWriter, r *http.Request) {
+	if loggedIn(r) != true {
+		http.Redirect(w, r, "/login", 302)
+	}
 	vars := mux.Vars(r)
 	todo := vars["id"]
 
 }
 
 func delHandler(w http.ResponseWriter, r *http.Request) {
+	if loggedIn(r) != true {
+		http.Redirect(w, r, "/login", 302)
+	}
 	vars := mux.Vars(r)
 	todo := vars["id"]
 
 }
 
 func finishHandler(w http.ResponseWriter, r *http.Request) {
+	if loggedIn(r) != true {
+		http.Redirect(w, r, "/login", 302)
+	}
 	vars := mux.Vars(r)
 	todo := vars["id"]
 
 }
 
 func userHandler(w http.ResponseWriter, r *http.Request) {
+	if loggedIn(r) != true {
+		http.Redirect(w, r, "/login", 302)
+	}
 	vars := mux.Vars(r)
 	id := vars["id"]
 
 }
 
 func userDelHandler(w http.ResponseWriter, r *http.Request) {
+	if loggedIn(r) != true {
+		http.Redirect(w, r, "/login", 302)
+	}
 	switch r.Method {
 	case "GET":
 		err := templates.ExecuteTemplate(w, "deluser.html", "")
