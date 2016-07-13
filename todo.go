@@ -187,7 +187,11 @@ func userDelHandler(w http.ResponseWriter, r *http.Request) {
 		query, err := db.Prepare("delete from users where email=? and password=?")
 		checkErr(err)
 
+		email := getEmail(r)
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
+		checkErr(err)
+
+		_, err = query.Exec(email, hashedPassword)
 		checkErr(err)
 
 	}
