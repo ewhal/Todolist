@@ -264,6 +264,13 @@ func finishHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	vars := mux.Vars(r)
 	todo := vars["id"]
+	db, err := sql.Open("mysql", DATABASE)
+	checkErr(err)
+	defer db.Close()
+
+	email, err := getEmail(r)
+	checkErr(err)
+	_, err = db.Query("update tasks set completed=true where email=? and name=?", email, html.EscapeString(todo))
 
 }
 
