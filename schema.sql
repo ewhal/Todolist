@@ -14,6 +14,7 @@ CREATE TABLE `tasks` (
   `duedate` DATETIME,
   `email` VARCHAR(320),
   `completed` boolean,
+  `public` boolean,
   PRIMARY KEY (`id`)
 );
 

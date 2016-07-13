@@ -130,7 +130,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func todoHandler(w http.ResponseWriter, r *http.Request) {
-	if loggedIn(r) != true {
+	if loggedIn(r) != true && public == false {
 		http.Redirect(w, r, "/login", 302)
 	}
 	vars := mux.Vars(r)
@@ -154,14 +154,15 @@ func addHandler(w http.ResponseWriter, r *http.Request) {
 		title := r.FormValue("title")
 		task := r.FormValue("task")
 		duedate := r.FormValue("duedate")
+		public := r.FormValue("public")
 		name := genName()
 		email, err := getEmail(r)
 		checkErr(err)
 
 		db, err := sql.Open("mysql", DATABASE)
 		checkErr(err)
-		query, err := db.Prepare("insert into tasks(name, title, task, duedate, created, email) values(?, ?, ?, ?, ?, ?)")
-		_, err = query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), time.Now().Format("2016-02-01 15:12:52"), email)
+		query, err := db.Prepare("insert into tasks(name, title, task, duedate, created, email, completed, public) values(?, ?, ?, ?, ?, ?, ?, ?)")
+		_, err = query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), time.Now().Format("2016-02-01 15:12:52"), email, false, public)
 		checkErr(err)
 
 	}
@@ -344,8 +345,7 @@ func main() {
 	router.HandleFunc("/todo/finish/{id}", finishHandler)
 
 	router.HandleFunc("/user", userHandler)
-	router.HandleFunc("/user/{id}", userHandler)
-	router.HandleFunc("/user/del/{id}", userDelHandler)
+	router.HandleFunc("/user/del", userDelHandler)
 
 	router.HandleFunc("/register", registerHandler)
 	router.HandleFunc("/login", loginHandler)
