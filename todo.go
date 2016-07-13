@@ -88,10 +88,9 @@ func addHandler(w http.ResponseWriter, r *http.Request) {
 
 		db, err := sql.Open("mysql", DATABASE)
 		checkErr(err)
-		query, err := db.Prepare("insert into tasks(name, title, task, duedate, created)")
-		err := query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), time.Now().Format("2016-02-01 15:12:52"))
+		query, err := db.Prepare("insert into tasks(name, title, task, duedate, created, email)")
+		err := query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), time.Now().Format("2016-02-01 15:12:52"), email)
 		checkErr(err)
-		http.Redirect(w, r, "/add", 302)
 
 	}
 
