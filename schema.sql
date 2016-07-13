@@ -13,6 +13,7 @@ CREATE TABLE `tasks` (
   `created` DATETIME,
   `duedate` DATETIME,
   `email` VARCHAR(320),
+  `completed` boolean,
   PRIMARY KEY (`id`)
 );
 
