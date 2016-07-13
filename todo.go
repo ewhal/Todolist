@@ -35,13 +35,15 @@ type User struct {
 }
 
 type Tasks struct {
-	ID      int    `json:"id"`
-	Name    string `json:"name"`
-	Title   string `json:"title"`
-	Task    string `json:"task"`
-	Created string `json:"created"`
-	DueDate string `json:"duedate"`
-	Email   string `json:"email"`
+	ID        int    `json:"id"`
+	Name      string `json:"name"`
+	Title     string `json:"title"`
+	Task      string `json:"task"`
+	Created   string `json:"created"`
+	DueDate   string `json:"duedate"`
+	Email     string `json:"email"`
+	Completed bool   `json:"completed"`
+	Public    bool   `json:"public"`
 }
 
 type Page struct {
@@ -161,6 +163,7 @@ func addHandler(w http.ResponseWriter, r *http.Request) {
 
 		db, err := sql.Open("mysql", DATABASE)
 		checkErr(err)
+
 		query, err := db.Prepare("insert into tasks(name, title, task, duedate, created, email, completed, public) values(?, ?, ?, ?, ?, ?, ?, ?)")
 		_, err = query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), time.Now().Format("2016-02-01 15:12:52"), email, false, public)
 		checkErr(err)
@@ -175,6 +178,38 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	vars := mux.Vars(r)
 	todo := vars["id"]
+	db, err := sql.Open("mysql", DATABASE)
+	checkErr(err)
+
+	switch r.Method {
+	case "GET":
+		b := Tasks{}
+		email, err := getEmail(r)
+		checkErr(err)
+
+		rows, err := db.Query("select name, title, task, duedate, created, email, completed, public from tasks where email=? and name=?", email, html.EscapeString(todo))
+		if err == sql.ErrNoRows {
+			http.Redirect(w, r, "/", 302)
+		}
+		for rows.Next() {
+			rows.Scan(&b.Name, &b.Title, &b.Task, &b.DueDate, &b.Created, &b.Email, &b.Completed, &b.Public)
+		}
+
+		err = templates.ExecuteTemplate(w, "edit.html", &b)
+		checkErr(err)
+
+	case "POST", "PUT":
+		title := r.FormValue("title")
+		task := r.FormValue("task")
+		duedate := r.FormValue("duedate")
+		public := r.FormValue("public")
+
+		query, err := db.Prepare("update tasks set title=?, task=?, duedate=?, public=?")
+		checkErr(err)
+		_, err = query.Exec(html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), html.EscapeString(public))
+		checkErr(err)
+
+	}
 
 }
 
