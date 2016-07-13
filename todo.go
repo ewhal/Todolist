@@ -220,6 +220,16 @@ func delHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	todo := vars["id"]
 
+	db, err := sql.Open("mysql", DATABASE)
+	checkErr(err)
+	email, err := getEmail(r)
+	checkErr(err)
+
+	switch r.Method {
+	case "POST", "DEL":
+		_, err = db.Query("delete from tasks where name=? and email=?", html.EscapeString(todo), email)
+	}
+
 }
 
 func finishHandler(w http.ResponseWriter, r *http.Request) {
