@@ -59,6 +59,20 @@ func genName() string {
 	return name
 }
 
+func getEmail(r *http.Request) (string, error) {
+	cookie, err := r.Cookie("session")
+	cookieValue := make(map[string]string)
+	if err != nil {
+		return "", err
+	}
+	err := cookieHandler.Decode("session", cookie.Value, &cookieValue)
+	if err != nil {
+		return "", err
+	}
+	return cookieValue["email"], nil
+
+}
+
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	err := templates.ExecuteTemplate(w, "index.html", "")
 	checkErr(err)
