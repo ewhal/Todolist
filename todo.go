@@ -8,18 +8,25 @@ import (
 	"net/http"
 	"time"
 
-	"golang.org/x/crypto/bcrypt"
-
 	"github.com/dchest/uniuri"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/securecookie"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const (
-	PORT   = ":8080"
-	LENGTH = 12
+	PORT     = ":8080"
+	LENGTH   = 12
+	DATABASE = ""
 )
 
 var templates = template.Must(template.ParseFiles("static/index.html", "static/login.html", "static/register.html", "static/todo.html", "static/edit.html", "static/add.html"))
+
+// generate new random cookie keys
+var cookieHandler = securecookie.New(
+	securecookie.GenerateRandomKey(64),
+	securecookie.GenerateRandomKey(32),
+)
 
 type User struct {
 	ID       int
@@ -29,6 +36,7 @@ type User struct {
 
 type Tasks struct {
 	ID      int    `json:"id"`
+	Name    string `json:"name"`
 	Title   string `json:"title"`
 	Task    string `json:"task"`
 	Created string `json:"created"`
@@ -51,20 +59,21 @@ func genName() string {
 	db, err := sql.Open("mysql", DATABASE)
 	checkErr(err)
 
-	_, err := db.QueryRow("select name from tasks where name=?", name)
+	_, err = db.Query("select name from tasks where name=?", name)
 	if err != sql.ErrNoRows {
 		genName()
 	}
 	checkErr(err)
 	return name
 }
+
 func loggedIn(r *http.Request) bool {
 	cookie, err := r.Cookie("session")
 	cookieValue := make(map[string]string)
 	if err != nil {
 		return false
 	}
-	err := cookieHandler.Decode("session", cookie.Value, &cookieValue)
+	err = cookieHandler.Decode("session", cookie.Value, &cookieValue)
 	if err != nil {
 		return false
 	}
@@ -98,16 +107,17 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("mysql", DATABASE)
 	checkErr(err)
 
-	query, err := db.Prepare("select name, title, task, created, duedate from tasks where email=? order by duedate desc")
+	email, err := getEmail(r)
 	checkErr(err)
 
-	email := getEmail(r)
-	rows, err := query.Exec(email)
-	b := Page{Tasks: Tasks{}}
+	rows, err := db.Query("select name, title, task, created, duedate from tasks where email=? order by duedate desc", email)
+	checkErr(err)
+
+	b := Page{Tasks: []Tasks{}}
 
 	for rows.Next() {
 		res := Tasks{}
-		rows.scan(&res.Name, &res.Title, &res.Task, &res.Created, &res.DueDate)
+		rows.Scan(&res.Name, &res.Title, &res.Task, &res.Created, &res.DueDate)
 
 		b.Tasks = append(b.Tasks, res)
 	}
@@ -145,11 +155,13 @@ func addHandler(w http.ResponseWriter, r *http.Request) {
 		task := r.FormValue("task")
 		duedate := r.FormValue("duedate")
 		name := genName()
+		email, err := getEmail(r)
+		checkErr(err)
 
 		db, err := sql.Open("mysql", DATABASE)
 		checkErr(err)
-		query, err := db.Prepare("insert into tasks(name, title, task, duedate, created, email)")
-		err = query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), time.Now().Format("2016-02-01 15:12:52"), email)
+		query, err := db.Prepare("insert into tasks(name, title, task, duedate, created, email) values(?, ?, ?, ?, ?, ?)")
+		_, err = query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), time.Now().Format("2016-02-01 15:12:52"), email)
 		checkErr(err)
 
 	}
@@ -187,8 +199,6 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 	if loggedIn(r) != true {
 		http.Redirect(w, r, "/login", 302)
 	}
-	vars := mux.Vars(r)
-	id := vars["id"]
 
 }
 
@@ -211,7 +221,8 @@ func userDelHandler(w http.ResponseWriter, r *http.Request) {
 		query, err := db.Prepare("delete from users where email=? and password=?")
 		checkErr(err)
 
-		email := getEmail(r)
+		email, err := getEmail(r)
+		checkErr(err)
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
 		checkErr(err)
 
@@ -229,7 +240,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		checkErr(err)
 	case "POST":
 		email := r.FormValue("email")
-		pass := r.FormValue("pass")
+		password := r.FormValue("password")
 		// open db connection
 		db, err := sql.Open("mysql", DATABASE)
 		checkErr(err)
@@ -285,7 +296,7 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 		checkErr(err)
 
 		defer db.Close()
-		_, err := db.QueryRow("select email from users where email=?", html.EscapeString(email))
+		_, err = db.Query("select email from users where email=?", html.EscapeString(email))
 		checkErr(err)
 		if err == sql.ErrNoRows {
 			query, err := db.Prepare("INSERT into users(email, password) values(?, ?)")
