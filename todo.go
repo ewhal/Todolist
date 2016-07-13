@@ -60,6 +60,7 @@ func genName() string {
 	name := uniuri.NewLen(LENGTH)
 	db, err := sql.Open("mysql", DATABASE)
 	checkErr(err)
+	defer db.Close()
 
 	_, err = db.Query("select name from tasks where name=?", name)
 	if err != sql.ErrNoRows {
@@ -108,6 +109,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 
 	db, err := sql.Open("mysql", DATABASE)
 	checkErr(err)
+	defer db.Close()
 
 	email, err := getEmail(r)
 	checkErr(err)
@@ -137,6 +139,7 @@ func todoHandler(w http.ResponseWriter, r *http.Request) {
 
 	db, err := sql.Open("mysql", DATABASE)
 	checkErr(err)
+	defer db.Close()
 
 	rows, err := db.Query("select public from tasks where name=?", html.EscapeString(todo))
 	var public bool
@@ -173,6 +176,7 @@ func addHandler(w http.ResponseWriter, r *http.Request) {
 
 		db, err := sql.Open("mysql", DATABASE)
 		checkErr(err)
+		defer db.Close()
 
 		query, err := db.Prepare("insert into tasks(name, title, task, duedate, created, email, completed, public) values(?, ?, ?, ?, ?, ?, ?, ?)")
 		_, err = query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), time.Now().Format("2016-02-01 15:12:52"), email, false, public)
@@ -190,6 +194,7 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 	todo := vars["id"]
 	db, err := sql.Open("mysql", DATABASE)
 	checkErr(err)
+	defer db.Close()
 
 	switch r.Method {
 	case "GET":
@@ -227,16 +232,19 @@ func delHandler(w http.ResponseWriter, r *http.Request) {
 	if loggedIn(r) != true {
 		http.Redirect(w, r, "/login", 302)
 	}
-	vars := mux.Vars(r)
-	todo := vars["id"]
-
-	db, err := sql.Open("mysql", DATABASE)
-	checkErr(err)
-	email, err := getEmail(r)
-	checkErr(err)
 
 	switch r.Method {
 	case "POST", "DEL":
+		vars := mux.Vars(r)
+		todo := vars["id"]
+
+		db, err := sql.Open("mysql", DATABASE)
+		checkErr(err)
+		defer db.Close()
+
+		email, err := getEmail(r)
+		checkErr(err)
+
 		_, err = db.Query("delete from tasks where name=? and email=?", html.EscapeString(todo), email)
 	}
 
