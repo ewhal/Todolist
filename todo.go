@@ -142,6 +142,7 @@ func todoHandler(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	rows, err := db.Query("select public from tasks where name=?", html.EscapeString(todo))
+	checkErr(err)
 	var public bool
 	for rows.Next() {
 		rows.Scan(&public)
@@ -150,7 +151,14 @@ func todoHandler(w http.ResponseWriter, r *http.Request) {
 	if loggedIn(r) != true && public == false {
 		http.Redirect(w, r, "/login", 302)
 	}
-	p := Page{}
+	p := Tasks{}
+	query, err := db.Query("select title, task, duedate, created, completed from tasks where name=?", html.EscapeString(todo))
+	checkErr(err)
+
+	for query.Next() {
+		query.Scan(&p.Title, &p.Task, &p.DueDate, &p.Created, &p.Completed)
+	}
+
 	err = templates.ExecuteTemplate(w, "todo.html", &p)
 	checkErr(err)
 
