@@ -1,4 +1,4 @@
-package main
+package todo
 
 import (
 	"database/sql"
@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/dchest/uniuri"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/securecookie"
 	"golang.org/x/crypto/bcrypt"
@@ -17,7 +18,13 @@ import (
 const (
 	PORT     = ":8080"
 	LENGTH   = 12
-	DATABASE = ""
+	USERNAME = "root"
+	// PASS database password
+	PASS = ""
+	// NAME database name
+	NAME = ""
+	// DATABASE connection String
+	DATABASE = USERNAME + ":" + PASS + "@/" + NAME + "?charset=utf8"
 )
 
 var templates = template.Must(template.ParseFiles("static/index.html", "static/login.html", "static/register.html", "static/todo.html", "static/edit.html", "static/add.html"))
@@ -35,7 +42,6 @@ type User struct {
 }
 
 type Tasks struct {
-	ID        int    `json:"id"`
 	Name      string `json:"name"`
 	Title     string `json:"title"`
 	Task      string `json:"task"`
@@ -60,10 +66,10 @@ func genName() string {
 	name := uniuri.NewLen(LENGTH)
 	db, err := sql.Open("mysql", DATABASE)
 	checkErr(err)
-	defer db.Close()
 
 	_, err = db.Query("select name from tasks where name=?", name)
-	if err != sql.ErrNoRows {
+	db.Close()
+	if err == sql.ErrNoRows {
 		genName()
 	}
 	checkErr(err)
@@ -78,10 +84,6 @@ func loggedIn(r *http.Request) bool {
 	}
 	err = cookieHandler.Decode("session", cookie.Value, &cookieValue)
 	if err != nil {
-		return false
-	}
-	email := cookieValue["email"]
-	if email != "" {
 		return false
 	}
 	return true
@@ -109,7 +111,6 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 
 	db, err := sql.Open("mysql", DATABASE)
 	checkErr(err)
-	defer db.Close()
 
 	email, err := getEmail(r)
 	checkErr(err)
@@ -125,6 +126,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 
 		b.Tasks = append(b.Tasks, res)
 	}
+	db.Close()
 
 	checkErr(err)
 
@@ -187,7 +189,7 @@ func addHandler(w http.ResponseWriter, r *http.Request) {
 		defer db.Close()
 
 		query, err := db.Prepare("insert into tasks(name, title, task, duedate, created, email, completed, public) values(?, ?, ?, ?, ?, ?, ?, ?)")
-		_, err = query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), time.Now().Format("2016-02-01 15:12:52"), email, false, public)
+		_, err = query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), time.Now().Format("2016-02-01 15:12:52"), email, false, html.EscapeString(public))
 		checkErr(err)
 
 	}
@@ -366,28 +368,28 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 func registerHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		err := templates.ExecuteTemplate(w, "login.html", "")
+		err := templates.ExecuteTemplate(w, "register.html", "")
 		checkErr(err)
 	case "POST":
 		email := r.FormValue("email")
-		pass := r.FormValue("pass")
+		pass := r.FormValue("password")
 		db, err := sql.Open("mysql", DATABASE)
 		checkErr(err)
 
 		defer db.Close()
-		_, err = db.Query("select email from users where email=?", html.EscapeString(email))
+		//_, err = db.Query("select email from users where email=?", html.EscapeString(email))
+		//checkErr(err)
+		//if err == sql.ErrNoRows {
+		query, err := db.Prepare("INSERT into users(email, password) values(?, ?)")
 		checkErr(err)
-		if err == sql.ErrNoRows {
-			query, err := db.Prepare("INSERT into users(email, password) values(?, ?)")
-			checkErr(err)
-			hashedPassword, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
-			checkErr(err)
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
+		checkErr(err)
 
-			_, err = query.Exec(html.EscapeString(email), hashedPassword)
-			checkErr(err)
-			http.Redirect(w, r, "/login", 302)
+		_, err = query.Exec(html.EscapeString(email), hashedPassword)
+		checkErr(err)
+		http.Redirect(w, r, "/login", 302)
 
-		}
+		//}
 		http.Redirect(w, r, "/register", 302)
 
 	}
@@ -414,9 +416,9 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", rootHandler)
 
-	router.HandleFunc("/todo", todoHandler)
-	router.HandleFunc("/todo/{id}", todoHandler)
+	//	router.HandleFunc("/todo", todoHandler)
 	router.HandleFunc("/todo/add", addHandler)
+	//	router.HandleFunc("/todo/{id}", todoHandler)
 	router.HandleFunc("/todo/edit/{id}", editHandler)
 	router.HandleFunc("/todo/del/{id}", delHandler)
 
