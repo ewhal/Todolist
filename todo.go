@@ -191,6 +191,7 @@ func addHandler(w http.ResponseWriter, r *http.Request) {
 		query, err := db.Prepare("insert into tasks(name, title, task, duedate, created, email, completed, public) values(?, ?, ?, ?, ?, ?, ?, ?)")
 		_, err = query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), time.Now().Format("2016-02-01 15:12:52"), email, false, html.EscapeString(public))
 		checkErr(err)
+		http.Redirect(w, r, "/add", 302)
 
 	}
 
@@ -233,6 +234,7 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 		checkErr(err)
 		_, err = query.Exec(html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), html.EscapeString(public))
 		checkErr(err)
+		http.Redirect(w, r, "/edit", 302)
 
 	}
 

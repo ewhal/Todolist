@@ -57,14 +57,12 @@
 		<div class="container">
 			<div class="row">
 				{{ range .Tasks}}
-				<div class="col-md-5">
+				<div class="col-md-3">
 					<div class="well bs-component">
-						<p>{{.Name}}</p>
+						<a href="/edit/{{.Name}}" class="btn btn-raised btn-primary">Edit<div class="ripple-container"></div></a>
+						<h3><a href="/todo/{{.Name}}">{{.Name}}</a></h3>
 						<p>{{.Title}}</p>
 						<p>{{.Task}}</p>
-						<p>{{.DueDate}}</p>
-						<p>{{.Created}}</p>
-						<p>{{.Completed}}</p>
 					</div>
 				</div>
 				{{end}}
