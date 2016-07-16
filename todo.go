@@ -416,13 +416,13 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", rootHandler)
 
-	//	router.HandleFunc("/todo", todoHandler)
-	router.HandleFunc("/todo/add", addHandler)
-	//	router.HandleFunc("/todo/{id}", todoHandler)
-	router.HandleFunc("/todo/edit/{id}", editHandler)
-	router.HandleFunc("/todo/del/{id}", delHandler)
+	router.HandleFunc("/todo", todoHandler)
+	router.HandleFunc("/add", addHandler)
+	router.HandleFunc("/todo/{id}", todoHandler)
+	router.HandleFunc("/edit/{id}", editHandler)
+	router.HandleFunc("/del/{id}", delHandler)
 
-	router.HandleFunc("/todo/finish/{id}", finishHandler)
+	router.HandleFunc("/finish/{id}", finishHandler)
 
 	router.HandleFunc("/user", userHandler)
 	router.HandleFunc("/user/del", userDelHandler)
