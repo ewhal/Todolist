@@ -115,7 +115,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 	email, err := getEmail(r)
 	checkErr(err)
 
-	rows, err := db.Query("select name, title, task, created, duedate from tasks where email=? order by duedate desc", email)
+	rows, err := db.Query("select name, title, task, created, duedate from tasks where email=? order by duedate asc", email)
 	checkErr(err)
 
 	b := Page{Tasks: []Tasks{}}
