@@ -217,13 +217,13 @@
 				$(".fc-today-button").addClass("btn btn-primary");
 
 
-				$('#addButton').click( function() {
-					$.modal();
+				$('#addButton').click( function(event) {
+					$('$addButton').modal();
 					return false;
 				});
 
-				$('#submitButton').click( function() {
-					$.submit();
+				$('#submitButton').click( function(event) {
+					$('#submitButton').submit();
 				});
 
 
