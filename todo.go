@@ -7,7 +7,6 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/dchest/uniuri"
 	_ "github.com/go-sql-driver/mysql"
@@ -64,10 +63,6 @@ type Cal struct {
 	Start       string `json:"start"`
 	End         string `json:"end"`
 	URL         string `json:"url"`
-}
-
-type CalPage struct {
-	Cal []Cal `json:""`
 }
 
 func checkErr(err error) {
@@ -137,18 +132,18 @@ func calHandler(w http.ResponseWriter, r *http.Request) {
 	email, err := getEmail(r)
 	checkErr(err)
 
-	rows, err := db.Query("select name, title, task, created, duedate from tasks where email=? order by duedate asc", email)
+	rows, err := db.Query("select title, task, created, duedate, allday, name from tasks where email=? order by duedate asc", email)
 	checkErr(err)
 
-	b := CalPage{[]Cal{}}
+	b := []Cal{}
 
 	for rows.Next() {
 		res := Cal{}
 		var name string
-		rows.Scan(name, &res.Title, &res.Description, &res.Start, &res.End)
+		rows.Scan(&res.Title, &res.Description, &res.Start, &res.End, &res.Allday, name)
 		res.URL = ADDRESS + "/todo/" + name
 
-		b.Cal = append(b.Cal, res)
+		b = append(b, res)
 	}
 	db.Close()
 
@@ -238,6 +233,8 @@ func addHandler(w http.ResponseWriter, r *http.Request) {
 		task := r.FormValue("task")
 		duedate := r.FormValue("duedate")
 		public := r.FormValue("public")
+		created := r.FormValue("created")
+		allday := r.FormValue("allday")
 		name := genName()
 		email, err := getEmail(r)
 		checkErr(err)
@@ -246,8 +243,8 @@ func addHandler(w http.ResponseWriter, r *http.Request) {
 		checkErr(err)
 		defer db.Close()
 
-		query, err := db.Prepare("insert into tasks(name, title, task, duedate, created, email, completed, public) values(?, ?, ?, ?, ?, ?, ?, ?)")
-		_, err = query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), time.Now().Format("2016-02-01 15:12:52"), email, false, html.EscapeString(public))
+		query, err := db.Prepare("insert into tasks(name, title, task, duedate, created, email, completed, public, allday) values(?, ?, ?, ?, ?, ?, ?, ?)")
+		_, err = query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), html.EscapeString(created), email, false, html.EscapeString(public), html.EscapeString(allday))
 		checkErr(err)
 		http.Redirect(w, r, "/add", 302)
 

@@ -15,6 +15,7 @@ CREATE TABLE `tasks` (
   `email` VARCHAR(320),
   `completed` VARCHAR(6),
   `public` VARCHAR(6),
+  `allday` VARCHAR(6),
   PRIMARY KEY (`id`)
 );
 
