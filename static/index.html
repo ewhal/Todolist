@@ -57,10 +57,13 @@
 
 
 		<div class="container">
-			<div class="row">
-				<div class="col-xs-12">
-					<div id="bootstrapModalFullCalendar"></div>
+			<div class="well">
+				<div class="row">
+					<div class="col-xs-12">
+						<div id="bootstrapModalFullCalendar"></div>
+					</div>
 				</div>
+
 			</div>
 
 			<div class="modal" id="fullCalModal">
@@ -97,6 +100,10 @@
 			$.material.init();
 			$(document).ready(function() { 
 				$('#bootstrapModalFullCalendar').fullCalendar({
+					$('.fc-toolbar').find('.fc-button-group').addClass('btn-group');
+					$('.fc-toolbar').find('.ui-button').addClass('btn btn-primary');
+					$('.fc-toolbar').find('.fc-prev-button').html($('<span />').attr('class', 'glyphicon glyphicon-chevron-left'));
+					$('.fc-toolbar').find('.fc-next-button').html($('<span />').attr('class', 'glyphicon glyphicon-chevron-right'));
 					events: '/api/cal',
 					header: {
 						left: 'today',
