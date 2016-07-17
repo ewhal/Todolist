@@ -70,11 +70,10 @@
 							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 							<h4 class="modal-title" id="modalTitle"></h4>
 						</div>
-						<div id="modalBody" class="modal-body">
-						</div>
+						<div id="modalBody" class="modal-body"></div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-							<button type="button" class="btn btn-primary" id="eventUrl">Event Page</button>
+							<button type="button" class="btn btn-primary" id="eventUrl">Task</button>
 						</div>
 					</div>
 				</div>
@@ -106,8 +105,8 @@
 					eventClick:  function(event, jsEvent, view) {
 						$('#modalTitle').html(event.title);
 						$('#modalBody').html(event.description);
-						$('#eventUrl').attr('href',event.url);
 						$('#fullCalModal').modal();
+						$('#eventUrl').attr('href',event.url);
 					}
 				});
 			});
