@@ -189,7 +189,7 @@ func addHandler(w http.ResponseWriter, r *http.Request) {
 		defer db.Close()
 
 		query, err := db.Prepare("insert into tasks(name, title, task, duedate, created, email, completed, public) values(?, ?, ?, ?, ?, ?, ?, ?)")
-		_, err = query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), time.Now().Format("2016-02-01 15:12:52"), email, false, html.EscapeString(public))
+		_, err = query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), time.Now().Format("2016-02-01"), email, false, html.EscapeString(public))
 		checkErr(err)
 		http.Redirect(w, r, "/add", 302)
 
