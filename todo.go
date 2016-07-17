@@ -51,6 +51,7 @@ type Tasks struct {
 	Email     string `json:"email"`
 	Completed bool   `json:"completed"`
 	Public    bool   `json:"public"`
+	Allday    bool   `json:"allday"`
 }
 
 type Page struct {
@@ -268,12 +269,12 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 		email, err := getEmail(r)
 		checkErr(err)
 
-		rows, err := db.Query("select name, title, task, duedate, created, email, completed, public from tasks where email=? and name=?", email, html.EscapeString(todo))
+		rows, err := db.Query("select name, title, task, duedate, created, email, completed, public, allday from tasks where email=? and name=?", email, html.EscapeString(todo))
 		if err == sql.ErrNoRows {
 			http.Redirect(w, r, "/", 302)
 		}
 		for rows.Next() {
-			rows.Scan(&b.Name, &b.Title, &b.Task, &b.DueDate, &b.Created, &b.Email, &b.Completed, &b.Public)
+			rows.Scan(&b.Name, &b.Title, &b.Task, &b.DueDate, &b.Created, &b.Email, &b.Completed, &b.Public, &b.Allday)
 		}
 
 		err = templates.ExecuteTemplate(w, "edit.html", &b)
@@ -282,12 +283,16 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 	case "POST", "PUT":
 		title := r.FormValue("title")
 		task := r.FormValue("task")
+		created := r.FormValue("created")
 		duedate := r.FormValue("duedate")
 		public := r.FormValue("public")
+		allday := r.FormValue("allday")
 
-		query, err := db.Prepare("update tasks set title=?, task=?, duedate=?, public=? where name=?")
+		query, err := db.Prepare("update tasks set title=?, task=?, duedate=?, public=?, created=?, allday=? where name=? and email=?")
 		checkErr(err)
-		_, err = query.Exec(html.EscapeString(todo), html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), html.EscapeString(public))
+		email, err := getEmail(r)
+		checkErr(err)
+		_, err = query.Exec(html.EscapeString(todo), html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), html.EscapeString(public), html.EscapeString(created), html.EscapeString(allday), email)
 		checkErr(err)
 		http.Redirect(w, r, "/edit", 302)
 
@@ -312,9 +317,9 @@ func delHandler(w http.ResponseWriter, r *http.Request) {
 		email, err := getEmail(r)
 		checkErr(err)
 
-		_, err = db.Query("delete from tasks where name=? and email=?", html.EscapeString(todo), email)
+		_, err = db.Query("delete from tasks where email=? and name=?", email, html.EscapeString(todo))
 		checkErr(err)
-		http.Redirect(w, r, "/", 302)
+		http.Redirect(w, r, "/todo", 302)
 	}
 
 }

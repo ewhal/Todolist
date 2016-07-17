@@ -74,15 +74,25 @@
 								<label for="inputTask" class="col-md-2 control-label">Task</label>
 
 								<div class="col-md-10">
-									<input type="text" class="form-control" id="inputTask" required name="task" value="{{.Task}}">
+									<input type="textarea" class="form-control" id="inputTask" required name="task" value="{{.Task}}">
 								</div>
 
 							</div>
 							<div class="form-group is-empty">
+								<label for="inputCreated" class="col-md-2 control-label">Created</label>
+
+								<div class="col-md-10">
+									<input type="datetime-local" class="form-control" id="inputCreated" required name="created" value="{{.Created}}">
+								</div>
+
+							</div>
+
+
+							<div class="form-group is-empty">
 								<label for="inputDueDate" class="col-md-2 control-label">Due Date</label>
 
 								<div class="col-md-10">
-									<input type="date" class="form-control" id="inputDueDate" required value="{{.DueDate}}" name="duedate">
+									<input type="datetime-local" class="form-control" id="inputDueDate" required name="duedate" value="{{.DueDate}}">
 								</div>
 
 							</div>
@@ -90,14 +100,23 @@
 								<label for="selectPublic" class="col-md-2 control-label">Public</label>
 
 								<div class="col-md-10">
-									<select id="selectPublic" class="form-control" value="{{.Public}}" name="public">
+									<select id="selectPublic" class="form-control" name="public" value="{{.Public}}">
 										<option>true</option>
 										<option>false</option>
 									</select>
 								</div>
 							</div>
 
+							<div class="form-group is-empty">
+								<label for="selectAllday" class="col-md-2 control-label">All Day Task</label>
 
+								<div class="col-md-10">
+									<select id="selectAllday" class="form-control" name="allday" value="{{.AllDay}}">
+										<option>true</option>
+										<option>false</option>
+									</select>
+								</div>
+							</div>
 
 						</div>
 						<div class="form-group">
