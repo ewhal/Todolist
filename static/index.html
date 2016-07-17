@@ -63,18 +63,18 @@
 				</div>
 			</div>
 
-			<div class="modal" id="fullCalModal">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<a class="close" data-dismiss="modal" aria-hidden="true">×</a>
-							<h4 class="modal-title" id="modalTitle"></h4>
-						</div>
-						<div id="modalBody" class="modal-body"></div>
-						<div class="modal-footer">
-							<a class="btn btn-default" data-dismiss="modal">Close</a>
-							<a class="btn btn-primary" id="eventUrl">Task</a>
-						</div>
+		</div>
+		<div class="modal" id="fullCalModal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<a class="close" data-dismiss="modal" aria-hidden="true">×</a>
+						<h4 class="modal-title" id="modalTitle"></h4>
+					</div>
+					<div id="modalBody" class="modal-body"></div>
+					<div class="modal-footer">
+						<a class="btn btn-default" data-dismiss="modal">Close</a>
+						<a class="btn btn-primary" id="eventUrl">Task</a>
 					</div>
 				</div>
 			</div>
@@ -107,6 +107,7 @@
 						$('#modalBody').html(event.description);
 						$('#eventUrl').attr('href',event.url);
 						$('#fullCalModal').modal();
+						return false;
 					}
 				});
 			});
