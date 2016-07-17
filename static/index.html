@@ -67,7 +67,8 @@
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">
-							<a class="close" data-dismiss="modal" aria-hidden="true">×</a>
+							<a id="eventEdit" class="fa fa-pencil-square-o pull-right"></a>
+							<a id="eventDel" onlick="return confirm('Are you sure')" class="fa fa-trash pull-right"></a>
 							<h4 class="modal-title" id="modalTitle"></h4>
 						</div>
 						<div id="modalBody" class="modal-body"></div>
@@ -105,7 +106,10 @@
 					eventClick:  function(event, jsEvent, view) {
 						$('#modalTitle').html(event.title);
 						$('#modalBody').html(event.description);
+						$('#modalTitle').attr('href',"https://todo.pantsu.cat/todo/" + event.url);
 						$('#eventUrl').attr('href',"https://todo.pantsu.cat/todo/" + event.url);
+						$('#eventEdit').attr('href',"https://todo.pantsu.cat/edit/" + event.url);
+						$('#eventDel').attr('href',"https://todo.pantsu.cat/del/" + event.url);
 						$('#fullCalModal').modal();
 						return false;
 					}
