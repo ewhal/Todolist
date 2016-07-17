@@ -493,7 +493,7 @@ func main() {
 	router.HandleFunc("/login", loginHandler)
 	router.HandleFunc("/logout", logoutHandler)
 	router.HandleFunc("/resetpass", resetHandler)
-	router.Handle("/assets/{rest}", http.StripPrefix("/static/", http.FileServer(http.Dir("./assets/"))))
+	router.Handle("/assets/{rest}", http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets/"))))
 	// ListenAndServe on PORT with router
 	err := http.ListenAndServe(PORT, router)
 	if err != nil {
