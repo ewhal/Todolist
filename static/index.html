@@ -97,7 +97,7 @@
 					</div>
 					<div class="modal-body">
 
-						<form class="form-horizontal" action="/add" method="POST" id="addForm">
+						<form class="form-horizontal" id="addForm">
 							<fieldset>
 
 								<div class="form-group">
@@ -226,9 +226,13 @@
 						type: "POST",
 						url: "/add",
 						data: formdata,
+						cache: false,
+						success: function(result) {
+
+							$('#addModal').modal('hide');
+							$('#bootstrapModalFullCalendar').fullCalendar( 'rerenderEvents' );
+						}
 					});
-					$('addModal').modal('hide');
-					$('#bootstrapModalFullCalendar').fullCalendar( 'rerenderEvents' );
 					return false;
 
 				});
