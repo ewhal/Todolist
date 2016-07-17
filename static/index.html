@@ -221,9 +221,8 @@
 				$(".fc-today-button").addClass("btn btn-primary");
 			
 				$('#submitButton').click( function() {
-					$('#addForm').submit( function() {
-						event.preventDefault();
-						$(this).submit();
+					$('#addForm').submit( function(event) {
+						return false;
 					});
 					$('addModal').modal('hide');
 					$('#bootstrapModalFullCalendar').fullCalendar( 'rerenderEvents' );
