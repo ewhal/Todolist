@@ -15,6 +15,7 @@
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap.material-design/0.5.10/css/bootstrap-material-design.min.css" integrity="sha256-j3CLSRG31GkOu6kaeLh7XsRgL2YNvRl9aOtXoAYt320=" crossorigin="anonymous">
 
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap.material-design/0.5.10/css/ripples.min.css" integrity="sha256-+Og2qJI9qzvKYwhGo/LYXg0FzE1BhEQfDsUSjKXQ3Bg=" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontawesome/4.6.3/css/font-awesome.min.css" integrity="sha256-AIodEDkC8V/bHBkfyxzolUMw57jeQ9CauwhVW6YJ9CA=" crossorigin="anonymous">
 
 
 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -55,12 +56,17 @@
 
 
 		<div class="container">
-			<div class="well bs-component">
-				<p>{{.Title}}</p>
-				<p>{{.Task}}</p>
-				<p>{{.DueDate}}</p>
-				<p>{{.Created}}</p>
-				<p>{{.Completed}}</p>
+			<div class="row">
+				{{ range .Tasks}}
+				<div class="col-md-3">
+					<div class="well bs-component">
+						<a href="/edit/{{.Name}}" class="fa fa-pencil-square-o pull-right"></a>
+						<a href="/del/{{.Name}}" onlick="return confirm('Are you sure')" class="fa fa-trash pull-right"></a>
+						<h3><a href="/todo/{{.Name}}">{{.Name}}</a></h3>
+						<p>{{.Title}}</p>
+					</div>
+				</div>
+				{{end}}
 			</div>
 		</div>
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
