@@ -68,24 +68,112 @@
 				</div>
 
 			</div>
+			<a id="addButton"class="btn btn-primary btn-fab"><i class="material-icons">grade</i></a>
+		</div>
 
-			<div class="modal" id="fullCalModal">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<a id="eventEdit" class="fa fa-pencil-square-o pull-right"></a>
-							<a id="eventDel" onlick="return confirm('Are you sure')" class="fa fa-trash pull-right"></a>
-							<button type="button" class="close pull-right" data-dismiss="modal" aria-hidden="true">×</button>
-							<h4 class="modal-title" id="modalTitle"></h4>
-						</div>
-						<div id="modalBody" class="modal-body"></div>
-						<div class="modal-footer">
-							<a class="btn btn-primary" id="eventUrl">Todo Page</a>
-						</div>
+		<div class="modal" id="fullCalModal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<a id="eventEdit" class="fa fa-pencil-square-o pull-right"></a>
+						<a id="eventDel" onlick="return confirm('Are you sure')" class="fa fa-trash pull-right"></a>
+						<button type="button" class="close pull-right" data-dismiss="modal" aria-hidden="true">×</button>
+						<h4 class="modal-title" id="modalTitle"></h4>
+					</div>
+					<div id="modalBody" class="modal-body"></div>
+					<div class="modal-footer">
+						<a class="btn btn-primary" id="eventUrl">Todo Page</a>
 					</div>
 				</div>
 			</div>
 		</div>
+		<div class="modal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">New Todo</h4>
+					</div>
+					<div  class="modal-body">
+
+						<form class="form-horizontal" action="/add" method="POST">
+							<fieldset>
+								<legend>New Todo</legend>
+
+								<div class="form-group">
+
+									<div class="form-group is-empty">
+										<label for="inputTitle" class="col-md-2 control-label">Title</label>
+
+										<div class="col-md-10">
+											<input type="text" class="form-control" id="inputTitle" required name="title" placeholder="Todo title">
+										</div>
+
+									</div>
+
+									<div class="form-group is-empty">
+										<label for="inputTask" class="col-md-2 control-label">Task</label>
+
+										<div class="col-md-10">
+											<input type="text" class="form-control" id="inputTask" required name="task" placeholder="Task">
+										</div>
+
+									</div>
+									<div class="form-group is-empty">
+										<label for="inputCreated" class="col-md-2 control-label">Created</label>
+
+										<div class="col-md-10">
+											<input type="datetime-local" class="form-control" id="inputCreated" required name="created">
+										</div>
+
+									</div>
+
+
+									<div class="form-group is-empty">
+										<label for="inputDueDate" class="col-md-2 control-label">Due Date</label>
+
+										<div class="col-md-10">
+											<input type="datetime-local" class="form-control" id="inputDueDate" required name="duedate">
+										</div>
+
+									</div>
+									<div class="form-group is-empty">
+										<label for="selectPublic" class="col-md-2 control-label">Public</label>
+
+										<div class="col-md-10">
+											<select id="selectPublic" class="form-control" name="public">
+												<option>true</option>
+												<option>false</option>
+											</select>
+										</div>
+									</div>
+
+									<div class="form-group is-empty">
+										<label for="selectAllday" class="col-md-2 control-label">Allday</label>
+
+										<div class="col-md-10">
+											<select id="selectAllday" class="form-control" name="allday">
+												<option>true</option>
+												<option>false</option>
+											</select>
+										</div>
+									</div>
+
+
+								</div>
+								<div class="form-group">
+
+									<div class="col-md-10 col-md-offset-2">
+										<button type="button" class="btn btn-default"data-dismiss="modal">Cancel</button>
+										<button type="submit" id="submitButton" class="btn btn-raised btn-primary">Submit<div class="ripple-container"></div></button>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
 
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -121,15 +209,23 @@
 						return false;
 					}
 					$(".fc-prev-button").addClass("btn btn-primary fa fa-arrow-left")
-					$(".fc-next-button").addClass("btn btn-primary fa fa-arrow-right")
-					$(".fc-month-button").addClass("btn btn-primary")
-					$(".fc-agendaWeek-button").addClass("btn btn-primary")
-					$(".fc-agendaDay-button").addClass("btn btn-primary")
-					$(".fc-today-button").addClass("btn btn-primary")
+						$(".fc-next-button").addClass("btn btn-primary fa fa-arrow-right")
+						$(".fc-month-button").addClass("btn btn-primary")
+						$(".fc-agendaWeek-button").addClass("btn btn-primary")
+						$(".fc-agendaDay-button").addClass("btn btn-primary")
+						$(".fc-today-button").addClass("btn btn-primary")
 				});
 
-				
-	
+				$('#addButton').click( function() {
+					$.modal();
+					return false;
+				});
+
+				$('#submitButton').click( function() {
+					$.submit();
+				});
+
+
 
 			});
 		</script>
