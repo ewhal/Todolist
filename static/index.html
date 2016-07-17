@@ -15,6 +15,7 @@
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap.material-design/0.5.10/css/bootstrap-material-design.min.css" integrity="sha256-j3CLSRG31GkOu6kaeLh7XsRgL2YNvRl9aOtXoAYt320=" crossorigin="anonymous">
 
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap.material-design/0.5.10/css/ripples.min.css" integrity="sha256-+Og2qJI9qzvKYwhGo/LYXg0FzE1BhEQfDsUSjKXQ3Bg=" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontawesome/4.6.3/css/font-awesome.min.css" integrity="sha256-AIodEDkC8V/bHBkfyxzolUMw57jeQ9CauwhVW6YJ9CA=" crossorigin="anonymous">
 
 
 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -44,7 +45,7 @@
 						<ul class="nav navbar-nav pull-right">
 							<li><a href="/user">User</a></li>
 							<li><a href="/register">Register</a></li>
-							<li><a href="/login">Register</a></li>
+							<li><a href="/login">Login</a></li>
 							<li><a href="/logout">Logout</a></li>
 						</ul>
 
@@ -59,11 +60,10 @@
 				{{ range .Tasks}}
 				<div class="col-md-3">
 					<div class="well bs-component">
-						<a href="/edit/{{.Name}}" class="btn btn-raised btn-primary pull-right">Edit<div class="ripple-container"></div></a>
-						<a href="/del/{{.Name}}" onlick="return confirm('Are you sure')" class="btn btn-raised btn-primary pull-right">Del<div class="ripple-container"></div></a>
+						<a href="/edit/{{.Name}}" class="fa fa-pencil-square-o pull-right"></a>
+						<a href="/del/{{.Name}}" onlick="return confirm('Are you sure')" class="icon-remove-sign pull-right"></a>
 						<h3><a href="/todo/{{.Name}}">{{.Name}}</a></h3>
 						<p>{{.Title}}</p>
-						<textarea>{{.Task}}</textarea>
 					</div>
 				</div>
 				{{end}}
