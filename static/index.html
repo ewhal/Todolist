@@ -98,9 +98,9 @@
 				$('#bootstrapModalFullCalendar').fullCalendar({
 					events: '/api/cal',
 					header: {
-						left: '',
+						left: 'today',
 						center: 'prev title next',
-						right: ''
+						right: 'month week day'
 					},
 					eventClick:  function(event, jsEvent, view) {
 						$('#modalTitle').html(event.title);
