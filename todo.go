@@ -142,7 +142,8 @@ func calHandler(w http.ResponseWriter, r *http.Request) {
 		res := Cal{}
 		var name string
 		rows.Scan(&res.Title, &res.Description, &res.Start, &res.End, &res.Allday, name)
-		res.URL = ADDRESS + "/todo/" + name
+		url := ADDRESS + "/todo/" + name
+		res.URL = url
 
 		b = append(b, res)
 	}
