@@ -220,14 +220,19 @@
 				$(".fc-agendaDay-button").addClass("btn btn-primary");
 				$(".fc-today-button").addClass("btn btn-primary");
 			
-				$('#submitButton').click( function() {
-					$('#addForm').submit( function(event) {
-						return false;
+				$('#addForm').submit( function() {
+					var formdata = $(this).serialize();
+					$.ajax({
+						type: "POST",
+						url: "/add",
+						data: formdata,
 					});
 					$('addModal').modal('hide');
 					$('#bootstrapModalFullCalendar').fullCalendar( 'rerenderEvents' );
+					return false;
 
 				});
+
 
 
 
