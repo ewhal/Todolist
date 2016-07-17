@@ -100,15 +100,11 @@
 			$.material.init();
 			$(document).ready(function() { 
 				$('#bootstrapModalFullCalendar').fullCalendar({
-					$('.fc-toolbar').find('.fc-button-group').addClass('btn-group');
-					$('.fc-toolbar').find('.ui-button').addClass('btn btn-primary');
-					$('.fc-toolbar').find('.fc-prev-button').html($('<span />').attr('class', 'glyphicon glyphicon-chevron-left'));
-					$('.fc-toolbar').find('.fc-next-button').html($('<span />').attr('class', 'glyphicon glyphicon-chevron-right'));
 					events: '/api/cal',
 					header: {
-						left: 'today',
-						center: 'prev title next',
-						right: 'month,agendaWeek,agendaDay'
+						left: 'prev next',
+						center: 'title',
+						right: today'month,agendaWeek,agendaDay'
 					},
 					eventClick:  function(event, jsEvent, view) {
 						$('#modalTitle').html(event.title);
