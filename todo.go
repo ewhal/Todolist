@@ -480,7 +480,7 @@ func main() {
 
 	router.HandleFunc("/todo", taskHandler)
 	router.HandleFunc("/add", addHandler)
-	router.HandleFunc("/api/cal", addHandler)
+	router.HandleFunc("/api/cal", calHandler)
 	router.HandleFunc("/todo/{id}", todoHandler)
 	router.HandleFunc("/edit/{id}", editHandler)
 	router.HandleFunc("/del/{id}", delHandler)
