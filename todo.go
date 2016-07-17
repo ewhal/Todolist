@@ -2,6 +2,7 @@ package todo
 
 import (
 	"database/sql"
+	"encoding/json"
 	"html"
 	"html/template"
 	"log"
@@ -20,7 +21,8 @@ const (
 	LENGTH   = 12
 	USERNAME = "root"
 	// PASS database password
-	PASS = ""
+	PASS    = ""
+	ADDRESS = "https://todo.pantsu.cat"
 	// NAME database name
 	NAME = ""
 	// DATABASE connection String
@@ -54,6 +56,18 @@ type Tasks struct {
 
 type Page struct {
 	Tasks []Tasks `json:"tasks"`
+}
+type Cal struct {
+	Title       string `json:"title"`
+	Allday      bool   `json:"allday"`
+	Description string `json:"description"`
+	Start       string `json:"start"`
+	End         string `json:"end"`
+	URL         string `json:"url"`
+}
+
+type CalPage struct {
+	Cal []Cal `json:""`
 }
 
 func checkErr(err error) {
@@ -109,6 +123,50 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", 302)
 	}
 
+	err := templates.ExecuteTemplate(w, "index.html", "")
+	checkErr(err)
+}
+
+func calHandler(w http.ResponseWriter, r *http.Request) {
+	if loggedIn(r) != true {
+		http.Redirect(w, r, "/login", 302)
+	}
+	db, err := sql.Open("mysql", DATABASE)
+	checkErr(err)
+
+	email, err := getEmail(r)
+	checkErr(err)
+
+	rows, err := db.Query("select name, title, task, created, duedate from tasks where email=? order by duedate asc", email)
+	checkErr(err)
+
+	b := CalPage{Cal: []Cal{}}
+
+	for rows.Next() {
+		res := Cal{}
+		var name string
+		rows.Scan(name, &res.Title, &res.Description, &res.Start, &res.End)
+		res.URL = ADDRESS + "/todo/" + name
+
+		b.Cal = append(b.Cal, res)
+	}
+	db.Close()
+
+	checkErr(err)
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(b)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+}
+
+func taskHandler(w http.ResponseWriter, r *http.Request) {
+	if loggedIn(r) != true {
+		http.Redirect(w, r, "/login", 302)
+	}
+
 	db, err := sql.Open("mysql", DATABASE)
 	checkErr(err)
 
@@ -130,7 +188,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 
 	checkErr(err)
 
-	err = templates.ExecuteTemplate(w, "index.html", &b)
+	err = templates.ExecuteTemplate(w, "task.html", &b)
 	checkErr(err)
 
 }
@@ -161,7 +219,7 @@ func todoHandler(w http.ResponseWriter, r *http.Request) {
 		query.Scan(&p.Title, &p.Task, &p.DueDate, &p.Created, &p.Completed)
 	}
 
-	err = templates.ExecuteTemplate(w, "todo.html", &p)
+	err = templates.ExecuteTemplate(w, "task.html", &p)
 	checkErr(err)
 
 }
@@ -179,6 +237,7 @@ func addHandler(w http.ResponseWriter, r *http.Request) {
 		title := r.FormValue("title")
 		task := r.FormValue("task")
 		duedate := r.FormValue("duedate")
+		due := r.FormValue("duetime")
 		public := r.FormValue("public")
 		name := genName()
 		email, err := getEmail(r)
@@ -188,8 +247,8 @@ func addHandler(w http.ResponseWriter, r *http.Request) {
 		checkErr(err)
 		defer db.Close()
 
-		query, err := db.Prepare("insert into tasks(name, title, task, duedate, created, email, completed, public) values(?, ?, ?, ?, ?, ?, ?, ?)")
-		_, err = query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), time.Now().Format("2016-02-01"), email, false, html.EscapeString(public))
+		query, err := db.Prepare("insert into tasks(name, title, task, duedate, duetime, created, email, completed, public) values(?, ?, ?, ?, ?, ?, ?, ?, ?)")
+		_, err = query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), html.EscapeString(duetime), time.Now().Format("2016-02-01 15:12:52"), email, false, html.EscapeString(public))
 		checkErr(err)
 		http.Redirect(w, r, "/add", 302)
 
@@ -420,8 +479,9 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", rootHandler)
 
-	router.HandleFunc("/todo", todoHandler)
+	router.HandleFunc("/todo", taskHandler)
 	router.HandleFunc("/add", addHandler)
+	router.HandleFunc("/api/cal", addHandler)
 	router.HandleFunc("/todo/{id}", todoHandler)
 	router.HandleFunc("/edit/{id}", editHandler)
 	router.HandleFunc("/del/{id}", delHandler)
