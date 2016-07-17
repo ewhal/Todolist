@@ -258,6 +258,8 @@ func delHandler(w http.ResponseWriter, r *http.Request) {
 		checkErr(err)
 
 		_, err = db.Query("delete from tasks where name=? and email=?", html.EscapeString(todo), email)
+		checkErr(err)
+		http.Redirect(w, r, "/", 302)
 	}
 
 }
