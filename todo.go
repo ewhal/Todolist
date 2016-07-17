@@ -1,4 +1,4 @@
-package todo
+package main
 
 import (
 	"database/sql"
