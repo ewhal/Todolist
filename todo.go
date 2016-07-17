@@ -140,7 +140,7 @@ func calHandler(w http.ResponseWriter, r *http.Request) {
 	rows, err := db.Query("select name, title, task, created, duedate from tasks where email=? order by duedate asc", email)
 	checkErr(err)
 
-	b := CalPage{Cal: []Cal{}}
+	b := CalPage{[]Cal{}}
 
 	for rows.Next() {
 		res := Cal{}
@@ -188,7 +188,7 @@ func taskHandler(w http.ResponseWriter, r *http.Request) {
 
 	checkErr(err)
 
-	err = templates.ExecuteTemplate(w, "task.html", &b)
+	err = templates.ExecuteTemplate(w, "todo.html", &b)
 	checkErr(err)
 
 }
