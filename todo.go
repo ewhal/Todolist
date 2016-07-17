@@ -20,8 +20,7 @@ const (
 	LENGTH   = 12
 	USERNAME = "root"
 	// PASS database password
-	PASS    = ""
-	ADDRESS = "https://todo.pantsu.cat"
+	PASS = ""
 	// NAME database name
 	NAME = ""
 	// DATABASE connection String
@@ -140,10 +139,7 @@ func calHandler(w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 		res := Cal{}
-		var name string
-		rows.Scan(&res.Title, &res.Description, &res.Start, &res.End, &res.Allday, name)
-		url := ADDRESS + "/todo/" + name
-		res.URL = url
+		rows.Scan(&res.Title, &res.Description, &res.Start, &res.End, &res.Allday, &res.URL)
 
 		b = append(b, res)
 	}
