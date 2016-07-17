@@ -68,7 +68,8 @@
 				</div>
 
 			</div>
-			<a id="addButton"class="btn btn-primary btn-fab"><i class="material-icons">grade</i></a>
+			<a  data-toggle="modal" data-target="#addModal" class="btn btn-primary btn-fab"><i class="material-icons">grade</i></a>
+
 		</div>
 
 		<div class="modal" id="fullCalModal">
@@ -218,14 +219,8 @@
 				$(".fc-agendaWeek-button").addClass("btn btn-primary");
 				$(".fc-agendaDay-button").addClass("btn btn-primary");
 				$(".fc-today-button").addClass("btn btn-primary");
-
-
-				$('#addButton').click( function(event) {
-					$('#addModal').modal('show');
-					return false;
-				});
-
-				$('#submitButton').click( function(event) {
+			
+				$('#submitButton').click( function() {
 					$('#submitButton').submit();
 				});
 
