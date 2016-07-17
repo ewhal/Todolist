@@ -97,7 +97,7 @@
 					</div>
 					<div class="modal-body">
 
-						<form class="form-horizontal" action="/add" method="POST">
+						<form class="form-horizontal" action="/add" method="POST" id="addForm">
 							<fieldset>
 
 								<div class="form-group">
@@ -221,7 +221,7 @@
 				$(".fc-today-button").addClass("btn btn-primary");
 			
 				$('#submitButton').click( function() {
-					$('#submitButton').submit();
+					$('#addForm').submit();
 				});
 
 
