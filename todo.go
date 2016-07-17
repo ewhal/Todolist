@@ -230,9 +230,9 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 		duedate := r.FormValue("duedate")
 		public := r.FormValue("public")
 
-		query, err := db.Prepare("update tasks set title=?, task=?, duedate=?, public=?")
+		query, err := db.Prepare("update tasks set title=?, task=?, duedate=?, public=? where name=?")
 		checkErr(err)
-		_, err = query.Exec(html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), html.EscapeString(public))
+		_, err = query.Exec(html.EscapeString(todo), html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), html.EscapeString(public))
 		checkErr(err)
 		http.Redirect(w, r, "/edit", 302)
 
