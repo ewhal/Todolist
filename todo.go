@@ -211,7 +211,7 @@ func todoHandler(w http.ResponseWriter, r *http.Request) {
 		query.Scan(&p.Title, &p.Task, &p.DueDate, &p.Created, &p.Completed, &p.Allday)
 	}
 
-	err = templates.ExecuteTemplate(w, "todo.html", &p)
+	err = templates.ExecuteTemplate(w, "task.html", &p)
 	checkErr(err)
 
 }
