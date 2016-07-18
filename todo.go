@@ -221,31 +221,24 @@ func addHandler(w http.ResponseWriter, r *http.Request) {
 	if loggedIn(r) != true {
 		http.Redirect(w, r, "/login", 302)
 	}
-	switch r.Method {
-	case "GET":
-		err := templates.ExecuteTemplate(w, "add.html", "")
-		checkErr(err)
 
-	case "POST":
-		title := r.FormValue("title")
-		task := r.FormValue("task")
-		duedate := r.FormValue("duedate")
-		public := r.FormValue("public")
-		created := r.FormValue("created")
-		allday := r.FormValue("allday")
-		name := genName()
-		email, err := getEmail(r)
-		checkErr(err)
+	title := r.FormValue("title")
+	task := r.FormValue("task")
+	duedate := r.FormValue("duedate")
+	public := r.FormValue("public")
+	created := r.FormValue("created")
+	allday := r.FormValue("allday")
+	name := genName()
+	email, err := getEmail(r)
+	checkErr(err)
 
-		db, err := sql.Open("mysql", DATABASE)
-		checkErr(err)
-		defer db.Close()
+	db, err := sql.Open("mysql", DATABASE)
+	checkErr(err)
+	defer db.Close()
 
-		query, err := db.Prepare("insert into tasks(name, title, task, duedate, created, email, completed, public, allday) values(?, ?, ?, ?, ?, ?, ?, ?, ?)")
-		_, err = query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), html.EscapeString(created), email, false, html.EscapeString(public), html.EscapeString(allday))
-		checkErr(err)
-
-	}
+	query, err := db.Prepare("insert into tasks(name, title, task, duedate, created, email, completed, public, allday) values(?, ?, ?, ?, ?, ?, ?, ?, ?)")
+	_, err = query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), html.EscapeString(created), email, false, html.EscapeString(public), html.EscapeString(allday))
+	checkErr(err)
 
 }
 
@@ -300,23 +293,18 @@ func delHandler(w http.ResponseWriter, r *http.Request) {
 	if loggedIn(r) != true {
 		http.Redirect(w, r, "/login", 302)
 	}
+	vars := mux.Vars(r)
+	todo := vars["id"]
 
-	switch r.Method {
-	case "POST", "DEL":
-		vars := mux.Vars(r)
-		todo := vars["id"]
+	db, err := sql.Open("mysql", DATABASE)
+	checkErr(err)
+	defer db.Close()
 
-		db, err := sql.Open("mysql", DATABASE)
-		checkErr(err)
-		defer db.Close()
+	email, err := getEmail(r)
+	checkErr(err)
 
-		email, err := getEmail(r)
-		checkErr(err)
-
-		_, err = db.Query("delete from tasks where email=? and name=?", email, html.EscapeString(todo))
-		checkErr(err)
-		http.Redirect(w, r, "/todo", 302)
-	}
+	_, err = db.Query("delete from tasks where email=? and name=?", email, html.EscapeString(todo))
+	checkErr(err)
 
 }
 
@@ -477,13 +465,14 @@ func main() {
 	router.HandleFunc("/", rootHandler)
 
 	router.HandleFunc("/todo", taskHandler)
-	router.HandleFunc("/add", addHandler)
-	router.HandleFunc("/api/cal", calHandler)
+	router.HandleFunc("/api/cal", addHandler).Methods("POST")
+	router.HandleFunc("/api/cal", calHandler).Methods("GET")
 	router.HandleFunc("/todo/{id}", todoHandler)
-	router.HandleFunc("/edit/{id}", editHandler)
-	router.HandleFunc("/del/{id}", delHandler)
+	router.HandleFunc("/api/{id}", todoHandler).Methods("GET")
+	router.HandleFunc("/api/cal/{id}", editHandler).Methods("PUT")
+	router.HandleFunc("/api/cal/{id}", delHandler).Methods("DELETE")
 
-	router.HandleFunc("/finish/{id}", finishHandler)
+	router.HandleFunc("/finish/{id}", finishHandler).Methods("POST")
 
 	router.HandleFunc("/user", userHandler)
 	router.HandleFunc("/user/del", userDelHandler)

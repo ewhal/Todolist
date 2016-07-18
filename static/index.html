@@ -223,7 +223,7 @@
 					var formdata = $(this).serialize();
 					$.ajax({
 						type: "POST",
-						url: "/add",
+						url: "api/cal",
 						data: formdata,
 						cache: false,
 						success: function(result) {
