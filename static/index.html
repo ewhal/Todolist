@@ -289,9 +289,8 @@
 					eventClick:  function(event, jsEvent, view) {
 						$('#modalTitle').html(event.title);
 						$('#modalBody').html(event.description);
-						$('#modalTitle').attr('href',"https://todo.pantsu.cat/todo/" + event.url);
 						$('#eventUrl').attr('href',"https://todo.pantsu.cat/todo/" + event.url);
-						$('#eventEdit').attr('href',"https://todo.pantsu.cat/edit/" + event.url);
+						$('#eventEdit').attr('href',"https://todo.pantsu.cat/api/cal/" + event.url);
 						$('#eventDel').attr('href',"https://todo.pantsu.cat/api/cal/" + event.url);
 						$('#fullCalModal').modal();
 						return false;
