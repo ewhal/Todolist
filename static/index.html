@@ -76,7 +76,7 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<a id="eventEdit" class="fa fa-pencil-square-o pull-right"></a>
-						<a id="eventDel" onlick="return confirm('Are you sure')" class="fa fa-trash pull-right"></a>
+						<a id="eventDel" class="fa fa-trash pull-right"></a>
 						<button type="button" class="close pull-right" data-dismiss="modal" aria-hidden="true">×</button>
 						<h4 class="modal-title" id="modalTitle"></h4>
 					</div>
@@ -238,16 +238,15 @@
 				$('input[type=datetime-local]').val(new Date().toJSON().slice(0,19));
 				$("#eventDel").click(function(event) {
 					$.ajax({
-						url: event.url, 
-						type: 'DELETE',
+						url: $(this).attr('href'),
+						type: "DELETE",
 						success: function(result) {
 
 							$('#addModal').modal('hide');
 							$('#bootstrapModalFullCalendar').fullCalendar( 'rerenderEvents' );
 						}
-
-
 					});
+					return false;
 				});
 
 
