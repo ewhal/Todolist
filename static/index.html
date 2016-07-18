@@ -207,7 +207,7 @@
 						$('#modalTitle').attr('href',"https://todo.pantsu.cat/todo/" + event.url);
 						$('#eventUrl').attr('href',"https://todo.pantsu.cat/todo/" + event.url);
 						$('#eventEdit').attr('href',"https://todo.pantsu.cat/edit/" + event.url);
-						$('#eventDel').attr('href',"https://todo.pantsu.cat/del/" + event.url);
+						$('#eventDel').attr('href', event.url);
 						$('#fullCalModal').modal();
 						return false;
 					},
