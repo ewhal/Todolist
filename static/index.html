@@ -351,12 +351,12 @@
 							$('#editModal').modal('show');
 							$('#fullCalModal').modal('hide');
 							obj = JSON.parse(data);
-							$('#editTitle').val(data.title);
-							$('#editTask').val(data.task);
-							$('#editCreated').val(data.created);
-							$('#editDueDate').val(data.duedate);
-							$('#editPublic').val(data.public);
-							$('#editAllday').val(data.allday);
+							$('#editTitle').val(obj.title);
+							$('#editTask').val(obj.task);
+							$('#editCreated').val(obj.created);
+							$('#editDueDate').val(obj.duedate);
+							$('#editPublic').val(obj.public);
+							$('#editAllday').val(obj.allday);
 
 					}
 					});
