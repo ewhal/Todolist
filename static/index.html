@@ -184,7 +184,7 @@
 						<h4 class="modal-title">Edit Todo</h4>
 					</div>
 					<div class="modal-body">
-						<form class="form-horizontal">
+						<form class="form-horizontal" id="editForm">
 							<fieldset>
 								<div class="form-group">
 
@@ -362,6 +362,25 @@
 					}
 					});
 					return false;
+				});
+				$('#editForm').submit( function() {
+					var formdata = $(this).serialize();
+					$.ajax({
+						type: "PUT",
+						url: $(this).attr('href'),
+						data: formdata,
+						cache: false,
+						success: function(result) {
+
+							$('#editModal').modal('hide');
+							setTimeout(function() {
+								$('#bootstrapModalFullCalendar').fullCalendar( 'rerenderEvents' );
+							}, 4000);
+
+						}
+					});
+					return false;
+
 				});
 
 			});
