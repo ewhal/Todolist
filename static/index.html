@@ -292,6 +292,7 @@
 						$('#eventUrl').attr('href',"https://todo.pantsu.cat/todo/" + event.url);
 						$('#eventEdit').attr('href',"https://todo.pantsu.cat/api/cal/" + event.url);
 						$('#eventDel').attr('href',"https://todo.pantsu.cat/api/cal/" + event.url);
+						$('#editForm').attr('href',"https://todo.pantsu.cat/api/cal/" + event.url);
 						$('#fullCalModal').modal();
 						return false;
 					},
@@ -359,7 +360,7 @@
 							$('#editDueDate').val(str1);
 							$('#editPublic').val(data.public);
 
-					}
+						}
 					});
 					return false;
 				});
