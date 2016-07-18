@@ -297,7 +297,7 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 	checkErr(err)
 	email, err := getEmail(r)
 	checkErr(err)
-	_, err = query.Exec(html.EscapeString(todo), html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), html.EscapeString(public), html.EscapeString(created), html.EscapeString(allday), email)
+	_, err = query.Exec(html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), html.EscapeString(public), html.EscapeString(created), html.EscapeString(allday), html.EscapeString(todo), email)
 	checkErr(err)
 
 }
