@@ -348,6 +348,7 @@
 						dataType: 'json',
 						success: function (data) { 
 
+							$('#editModal').modal('show');
 							$('#fullCalModal').modal('hide');
 							console.log(data);
 							$.each(data, function(index, element) {
