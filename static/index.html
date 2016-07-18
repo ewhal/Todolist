@@ -229,7 +229,10 @@
 						success: function(result) {
 
 							$('#addModal').modal('hide');
-							$('#bootstrapModalFullCalendar').fullCalendar( 'rerenderEvents' );
+							setTimeout(function myFunction() {
+								$('#bootstrapModalFullCalendar').fullCalendar( 'rerenderEvents' );
+							}, 2000);
+
 						}
 					});
 					return false;
@@ -243,7 +246,11 @@
 						success: function(result) {
 
 							$('#fullCalModal').modal('hide');
-							$('#bootstrapModalFullCalendar').fullCalendar( 'rerenderEvents' );
+
+
+							setTimeout(function myFunction() {
+								$('#bootstrapModalFullCalendar').fullCalendar( 'rerenderEvents' );
+							}, 2000);
 						}
 					});
 					return false;
