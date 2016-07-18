@@ -350,13 +350,15 @@
 
 							$('#editModal').modal('show');
 							$('#fullCalModal').modal('hide');
-							console.log(data);
-							$.each(data, function(index, element) {
-/*								$('body').append($('<div>', {
-									text: element.name
-								})); */
-							});
-						}
+							obj = JSON.parse(data);
+							$('#editTitle').val(data.title);
+							$('#editTask').val(data.task);
+							$('#editCreated').val(data.created);
+							$('#editDueDate').val(data.duedate);
+							$('#editPublic').val(data.public);
+							$('#editAllday').val(data.allday);
+
+					}
 					});
 					return false;
 				});
