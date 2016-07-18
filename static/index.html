@@ -350,7 +350,7 @@
 
 							$('#editModal').modal('show');
 							$('#fullCalModal').modal('hide');
-							obj = JSON.parse(data);
+							obj = $.parseJSON(json);
 							$('#editTitle').val(obj.title);
 							$('#editTask').val(obj.task);
 							$('#editCreated').val(obj.created);
