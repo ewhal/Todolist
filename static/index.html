@@ -341,6 +341,25 @@
 					});
 					return false;
 				});
+				$("#eventEdit").click(function(event) {
+					$.ajax({
+						url: $(this).attr('href'),
+						type: "GET",
+						cache: false,
+						dataType: 'json',
+						success: function (data) { 
+
+							$('#fullCalModal').modal('hide');
+							console.log(data);
+							$.each(data, function(index, element) {
+/*								$('body').append($('<div>', {
+									text: element.name
+								})); */
+							});
+						}
+					});
+					return false;
+				});
 
 			});
 		</script>
