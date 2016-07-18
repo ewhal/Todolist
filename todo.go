@@ -27,7 +27,7 @@ const (
 	DATABASE = USERNAME + ":" + PASS + "@/" + NAME + "?charset=utf8"
 )
 
-var templates = template.Must(template.ParseFiles("static/index.html", "static/login.html", "static/register.html", "static/todo.html", "static/edit.html", "static/add.html", "static/task.html"))
+var templates = template.Must(template.ParseFiles("static/index.html", "static/login.html", "static/register.html", "static/todo.html", "static/task.html"))
 
 // generate new random cookie keys
 var cookieHandler = securecookie.New(
