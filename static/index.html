@@ -75,7 +75,7 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<a data-toggle="modal" data-target="#editModal" id="eventEdit" class="fa fa-pencil-square-o pull-right"></a>
+						<a data-toggle="modal" data-target="#editModal" class="fa fa-pencil-square-o pull-right"></a>
 						<a id="eventDel" class="fa fa-trash pull-right"></a>
 						<button type="button" class="close pull-right" data-dismiss="modal" aria-hidden="true">×</button>
 						<h4 class="modal-title" id="modalTitle"></h4>
@@ -175,94 +175,94 @@
 					</div>
 				</div>
 			</div>
-			<div class="modal" id="editModal">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close pull-right" data-dismiss="modal" aria-hidden="true">×</button>
-							<h4 class="modal-title">Edit Todo</h4>
-						</div>
-						<div class="modal-body">
-							<form class="form-horizontal">
-								<fieldset>
-									<div class="form-group">
+		</div>
+		<div class="modal" id="editModal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close pull-right" data-dismiss="modal" aria-hidden="true">×</button>
+						<h4 class="modal-title">Edit Todo</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
 
-										<div class="form-group is-empty">
-											<label for="editTitle" class="col-md-2 control-label">Title</label>
+									<div class="form-group is-empty">
+										<label for="editTitle" class="col-md-2 control-label">Title</label>
 
-											<div class="col-md-10">
-												<input type="text" class="form-control" id="editTitle" required name="title">
-											</div>
-
-										</div>
-
-										<div class="form-group is-empty">
-											<label for="editTask" class="col-md-2 control-label">Task</label>
-
-											<div class="col-md-10">
-												<input type="textarea" class="form-control" id="editTask" required name="task">
-											</div>
-
-										</div>
-										<div class="form-group is-empty">
-											<label for="editCreated" class="col-md-2 control-label">Created</label>
-
-											<div class="col-md-10">
-												<input type="datetime-local" class="form-control" id="editCreated" required name="created">
-											</div>
-
-										</div>
-
-
-										<div class="form-group is-empty">
-											<label for="editDueDate" class="col-md-2 control-label">Due Date</label>
-
-											<div class="col-md-10">
-												<input type="datetime-local" class="form-control" id="editDueDate" required name="duedate">
-											</div>
-
-										</div>
-										<div class="form-group is-empty">
-											<label for="editPublic" class="col-md-2 control-label">Public</label>
-
-											<div class="col-md-10">
-												<select id="editPublic" class="form-control" name="public">
-													<option>true</option>
-													<option>false</option>
-												</select>
-											</div>
-										</div>
-
-										<div class="form-group is-empty">
-											<label for="editAllday" class="col-md-2 control-label">All Day Task</label>
-
-											<div class="col-md-10">
-												<select id="editAllday" class="form-control" name="allday">
-													<option>true</option>
-													<option>false</option>
-												</select>
-											</div>
+										<div class="col-md-10">
+											<input type="text" class="form-control" id="editTitle" required name="title">
 										</div>
 
 									</div>
-									<div class="form-group">
 
-										<div class="col-md-10 col-md-offset-2">
-											<button type="submit" class="btn btn-raised btn-primary">Submit<div class="ripple-container"></div></button>
+									<div class="form-group is-empty">
+										<label for="editTask" class="col-md-2 control-label">Task</label>
+
+										<div class="col-md-10">
+											<input type="textarea" class="form-control" id="editTask" required name="task">
+										</div>
+
+									</div>
+									<div class="form-group is-empty">
+										<label for="editCreated" class="col-md-2 control-label">Created</label>
+
+										<div class="col-md-10">
+											<input type="datetime-local" class="form-control" id="editCreated" required name="created">
+										</div>
+
+									</div>
+
+
+									<div class="form-group is-empty">
+										<label for="editDueDate" class="col-md-2 control-label">Due Date</label>
+
+										<div class="col-md-10">
+											<input type="datetime-local" class="form-control" id="editDueDate" required name="duedate">
+										</div>
+
+									</div>
+									<div class="form-group is-empty">
+										<label for="editPublic" class="col-md-2 control-label">Public</label>
+
+										<div class="col-md-10">
+											<select id="editPublic" class="form-control" name="public">
+												<option>true</option>
+												<option>false</option>
+											</select>
 										</div>
 									</div>
-								</fieldset>
-							</form>
 
-						</div>
-						<div class="modal-footer">
-						</div>
+									<div class="form-group is-empty">
+										<label for="editAllday" class="col-md-2 control-label">All Day Task</label>
+
+										<div class="col-md-10">
+											<select id="editAllday" class="form-control" name="allday">
+												<option>true</option>
+												<option>false</option>
+											</select>
+										</div>
+									</div>
+
+								</div>
+								<div class="form-group">
+
+									<div class="col-md-10 col-md-offset-2">
+										<button type="submit" class="btn btn-raised btn-primary">Submit<div class="ripple-container"></div></button>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+
+					</div>
+					<div class="modal-footer">
 					</div>
 				</div>
 			</div>
-
-
 		</div>
+
+
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 		<!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -304,7 +304,7 @@
 				$(".fc-agendaDay-button").addClass("btn btn-primary");
 				$(".fc-today-button").addClass("btn btn-primary");
 				$('input[type=datetime-local]').val(new Date().toJSON().slice(0,19));
-			
+
 				$('#addForm').submit( function() {
 					var formdata = $(this).serialize();
 					$.ajax({
