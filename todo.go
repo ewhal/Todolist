@@ -205,15 +205,19 @@ func todoHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", 302)
 	}
 	p := Tasks{}
-	query, err := db.Query("select title, task, duedate, created, completed from tasks where name=?", html.EscapeString(todo))
+	query, err := db.Query("select title, task, duedate, created, completed, allday from tasks where name=?", html.EscapeString(todo))
 	checkErr(err)
 
 	for query.Next() {
-		query.Scan(&p.Title, &p.Task, &p.DueDate, &p.Created, &p.Completed)
+		query.Scan(&p.Title, &p.Task, &p.DueDate, &p.Created, &p.Completed, &p.Allday)
 	}
 
-	err = templates.ExecuteTemplate(w, "task.html", &p)
-	checkErr(err)
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(b)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 }
 
