@@ -483,7 +483,7 @@ func main() {
 	router.HandleFunc("/api/cal", addHandler).Methods("POST")
 	router.HandleFunc("/api/cal", calHandler).Methods("GET")
 	router.HandleFunc("/api/cal/{id}", apitodoHandler).Methods("GET")
-	router.HandleFunc("/api/cal/{id}", editHandler).Methods("PUT")
+	router.HandleFunc("/api/cal/{id}", editHandler).Methods("PUT", "POST")
 	router.HandleFunc("/api/cal/{id}", delHandler).Methods("DELETE")
 
 	router.HandleFunc("/finish/{id}", finishHandler).Methods("POST")
