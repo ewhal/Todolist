@@ -236,6 +236,20 @@
 
 				});
 				$('input[type=datetime-local]').val(new Date().toJSON().slice(0,19));
+				$("#eventDel").click(function(event) {
+					$.ajax({
+						url: "https://todo.pantsu.cat/api/cal/" + event.url, 
+						type: 'DELETE',
+						success: function(result) {
+
+							$('#fullCalModal').modal('hide');
+							$('#bootstrapModalFullCalendar').fullCalendar( 'rerenderEvents' );
+						}
+
+
+					});
+					return false;
+				});
 
 
 
