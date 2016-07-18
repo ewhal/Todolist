@@ -185,8 +185,38 @@ func taskHandler(w http.ResponseWriter, r *http.Request) {
 	checkErr(err)
 
 }
-
 func todoHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	todo := vars["id"]
+
+	db, err := sql.Open("mysql", DATABASE)
+	checkErr(err)
+	defer db.Close()
+
+	rows, err := db.Query("select public from tasks where name=?", html.EscapeString(todo))
+	checkErr(err)
+	var public bool
+	for rows.Next() {
+		rows.Scan(&public)
+	}
+
+	if loggedIn(r) != true && public == false {
+		http.Redirect(w, r, "/login", 302)
+	}
+	p := Tasks{}
+	query, err := db.Query("select title, task, duedate, created, completed, allday from tasks where name=?", html.EscapeString(todo))
+	checkErr(err)
+
+	for query.Next() {
+		query.Scan(&p.Title, &p.Task, &p.DueDate, &p.Created, &p.Completed, &p.Allday)
+	}
+
+	err = templates.ExecuteTemplate(w, "todo.html", &p)
+	checkErr(err)
+
+}
+
+func apitodoHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	todo := vars["id"]
 
@@ -256,40 +286,19 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 	checkErr(err)
 	defer db.Close()
 
-	switch r.Method {
-	case "GET":
-		b := Tasks{}
-		email, err := getEmail(r)
-		checkErr(err)
+	title := r.FormValue("title")
+	task := r.FormValue("task")
+	created := r.FormValue("created")
+	duedate := r.FormValue("duedate")
+	public := r.FormValue("public")
+	allday := r.FormValue("allday")
 
-		rows, err := db.Query("select name, title, task, duedate, created, email, completed, public, allday from tasks where email=? and name=?", email, html.EscapeString(todo))
-		if err == sql.ErrNoRows {
-			http.Redirect(w, r, "/", 302)
-		}
-		for rows.Next() {
-			rows.Scan(&b.Name, &b.Title, &b.Task, &b.DueDate, &b.Created, &b.Email, &b.Completed, &b.Public, &b.Allday)
-		}
-
-		err = templates.ExecuteTemplate(w, "edit.html", &b)
-		checkErr(err)
-
-	case "POST", "PUT":
-		title := r.FormValue("title")
-		task := r.FormValue("task")
-		created := r.FormValue("created")
-		duedate := r.FormValue("duedate")
-		public := r.FormValue("public")
-		allday := r.FormValue("allday")
-
-		query, err := db.Prepare("update tasks set title=?, task=?, duedate=?, public=?, created=?, allday=? where name=? and email=?")
-		checkErr(err)
-		email, err := getEmail(r)
-		checkErr(err)
-		_, err = query.Exec(html.EscapeString(todo), html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), html.EscapeString(public), html.EscapeString(created), html.EscapeString(allday), email)
-		checkErr(err)
-		http.Redirect(w, r, "/edit", 302)
-
-	}
+	query, err := db.Prepare("update tasks set title=?, task=?, duedate=?, public=?, created=?, allday=? where name=? and email=?")
+	checkErr(err)
+	email, err := getEmail(r)
+	checkErr(err)
+	_, err = query.Exec(html.EscapeString(todo), html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), html.EscapeString(public), html.EscapeString(created), html.EscapeString(allday), email)
+	checkErr(err)
 
 }
 
@@ -469,10 +478,11 @@ func main() {
 	router.HandleFunc("/", rootHandler)
 
 	router.HandleFunc("/todo", taskHandler)
+	router.HandleFunc("/todo/{id}", todoHandler).Methods("GET")
+
 	router.HandleFunc("/api/cal", addHandler).Methods("POST")
 	router.HandleFunc("/api/cal", calHandler).Methods("GET")
-	router.HandleFunc("/todo/{id}", todoHandler)
-	router.HandleFunc("/api/{id}", todoHandler).Methods("GET")
+	router.HandleFunc("/api/cal/{id}", apitodoHandler).Methods("GET")
 	router.HandleFunc("/api/cal/{id}", editHandler).Methods("PUT")
 	router.HandleFunc("/api/cal/{id}", delHandler).Methods("DELETE")
 
