@@ -58,10 +58,10 @@ type Page struct {
 }
 type Cal struct {
 	Title       string `json:"title"`
-	Allday      bool   `json:"allday"`
 	Description string `json:"description"`
 	Start       string `json:"start"`
 	End         string `json:"end"`
+	Allday      bool   `json:"allDay"`
 	URL         string `json:"url"`
 }
 
