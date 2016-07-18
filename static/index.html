@@ -350,13 +350,14 @@
 
 							$('#editModal').modal('show');
 							$('#fullCalModal').modal('hide');
-							obj = $.parseJSON(data);
-							$('#editTitle').val(obj.title);
-							$('#editTask').val(obj.task);
-							$('#editCreated').val(obj.created);
-							$('#editDueDate').val(obj.duedate);
-							$('#editPublic').val(obj.public);
-							$('#editAllday').val(obj.allday);
+							$('#editTitle').val(data.title);
+							$('#editTask').val(data.task);
+							$('#editAllday').val(data.allday);
+							str = data.created.replace(/\s+/g, 'T');
+							$('#editCreated').val(str);
+							str1 = data.duedate.replace(/\s+/g, 'T');
+							$('#editDueDate').val(str1);
+							$('#editPublic').val(data.public);
 
 					}
 					});
