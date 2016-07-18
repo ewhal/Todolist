@@ -353,12 +353,19 @@
 							$('#fullCalModal').modal('hide');
 							$('#editTitle').val(data.title);
 							$('#editTask').val(data.task);
-							$('#editAllday').val(data.allday);
 							str = data.created.replace(/\s+/g, 'T');
 							$('#editCreated').val(str);
 							str1 = data.duedate.replace(/\s+/g, 'T');
 							$('#editDueDate').val(str1);
-							$('#editPublic').val(data.public);
+							$("#editPublic").filter(function() {
+								//may want to use $.trim in here
+								return $(this).text() == data.public; 
+							}).prop('selected', true);           
+							$("#editAllday").filter(function() {
+								//may want to use $.trim in here
+								return $(this).text() == data.allday; 
+							}).prop('selected', true);
+
 
 						}
 					});
