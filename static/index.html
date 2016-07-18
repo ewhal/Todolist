@@ -207,7 +207,7 @@
 						$('#modalTitle').attr('href',"https://todo.pantsu.cat/todo/" + event.url);
 						$('#eventUrl').attr('href',"https://todo.pantsu.cat/todo/" + event.url);
 						$('#eventEdit').attr('href',"https://todo.pantsu.cat/edit/" + event.url);
-						$('#eventDel').attr('href', event.url);
+						$('#eventDel').attr('href',"https://todo.pantsu.cat/api/cal/" + event.url);
 						$('#fullCalModal').modal();
 						return false;
 					},
@@ -238,17 +238,16 @@
 				$('input[type=datetime-local]').val(new Date().toJSON().slice(0,19));
 				$("#eventDel").click(function(event) {
 					$.ajax({
-						url: "https://todo.pantsu.cat/api/cal/" + event.url, 
+						url: event.url, 
 						type: 'DELETE',
 						success: function(result) {
 
-							$('#fullCalModal').modal('hide');
+							$('#addModal').modal('hide');
 							$('#bootstrapModalFullCalendar').fullCalendar( 'rerenderEvents' );
 						}
 
 
 					});
-					return false;
 				});
 
 
