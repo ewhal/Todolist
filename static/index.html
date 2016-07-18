@@ -229,9 +229,9 @@
 						success: function(result) {
 
 							$('#addModal').modal('hide');
-							setTimeout(function myFunction() {
+							setTimeout(function() {
 								$('#bootstrapModalFullCalendar').fullCalendar( 'rerenderEvents' );
-							}, 2000);
+							}, 4000);
 
 						}
 					});
@@ -243,14 +243,15 @@
 					$.ajax({
 						url: $(this).attr('href'),
 						type: "DELETE",
+						cache: false,
 						success: function(result) {
 
 							$('#fullCalModal').modal('hide');
 
 
-							setTimeout(function myFunction() {
+							setTimeout(function() {
 								$('#bootstrapModalFullCalendar').fullCalendar( 'rerenderEvents' );
-							}, 2000);
+							}, 4000);
 						}
 					});
 					return false;
