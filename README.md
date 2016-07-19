@@ -19,9 +19,9 @@ sudo yum install -y go mariadb-server mariadb
 ### Installing
 
 * go get https://github.com/ewhal/Todolist
-* nano todo.go
-* Configure port and database details
 * make
+* nano config.json
+* Configure port and database details
 
 ## License
 
