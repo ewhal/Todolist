@@ -88,16 +88,21 @@ func checkErr(err error) {
 
 // genName Random name geneation function
 func genName() string {
+	// use uniuri to generate random string
 	name := uniuri.NewLen(LENGTH)
+
+	// open db connection
 	db, err := sql.Open("mysql", DATABASE)
 	checkErr(err)
 
 	_, err = db.Query("select name from tasks where name=?", name)
 	db.Close()
-	if err == sql.ErrNoRows {
+	// if name exists in db call genName again
+	if err != sql.ErrNoRows {
 		genName()
 	}
 	checkErr(err)
+	// return random string
 	return name
 }
 
@@ -210,13 +215,16 @@ func taskHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 func todoHandler(w http.ResponseWriter, r *http.Request) {
+	// get todo name
 	vars := mux.Vars(r)
 	todo := vars["id"]
 
+	// open db connection
 	db, err := sql.Open("mysql", DATABASE)
 	checkErr(err)
 	defer db.Close()
 
+	// query if todo is public
 	rows, err := db.Query("select public from tasks where name=?", html.EscapeString(todo))
 	checkErr(err)
 	var public bool
@@ -229,6 +237,7 @@ func todoHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", 302)
 	}
 	p := Tasks{}
+	// query todo information from db
 	query, err := db.Query("select title, task, duedate, created, completed, allday from tasks where name=?", html.EscapeString(todo))
 	checkErr(err)
 
@@ -236,6 +245,7 @@ func todoHandler(w http.ResponseWriter, r *http.Request) {
 		query.Scan(&p.Title, &p.Task, &p.DueDate, &p.Created, &p.Completed, &p.Allday)
 	}
 
+	// Execute task template
 	err = templates.ExecuteTemplate(w, "task.html", &p)
 	checkErr(err)
 
