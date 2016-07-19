@@ -8,6 +8,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 
 	// uniuri for random string generation
 	"github.com/dchest/uniuri"
@@ -21,20 +22,23 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-const (
+type Configuration struct {
 	// PORT for golang to listen on
-	PORT = ":8080"
+	Port string
 	// LENGTH todo name length
-	LENGTH = 12
+	Length int
 	// USERNAME database username
-	USERNAME = "root"
+	Username string
 	// PASS database password
-	PASS = ""
+	Password string
 	// NAME database name
-	NAME = ""
-	// DATABASE connection String
-	DATABASE = USERNAME + ":" + PASS + "@/" + NAME + "?charset=utf8"
-)
+	Name string
+}
+
+var configuration Configuration
+
+// DATABASE connection String
+var DATABASE string
 
 var templates = template.Must(template.ParseFiles("static/index.html", "static/login.html", "static/register.html", "static/todo.html", "static/task.html"))
 
@@ -89,7 +93,7 @@ func checkErr(err error) {
 // genName Random name geneation function
 func genName() string {
 	// use uniuri to generate random string
-	name := uniuri.NewLen(LENGTH)
+	name := uniuri.NewLen(configuration.Length)
 
 	// open db connection
 	db, err := sql.Open("mysql", DATABASE)
@@ -527,6 +531,18 @@ func resetHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	file, err := os.Open("config.json")
+	if err != nil {
+		panic(err)
+	}
+	decoder := json.NewDecoder(file)
+	configuration := Configuration{}
+	err = decoder.Decode(&configuration)
+	if err != nil {
+		panic(err)
+	}
+
+	DATABASE = configuration.Username + ":" + configuration.Password + "@/" + configuration.Name + "?charset=utf8"
 	// create new mux router
 	router := mux.NewRouter()
 
@@ -554,7 +570,7 @@ func main() {
 	router.HandleFunc("/logout", logoutHandler)
 	router.HandleFunc("/resetpass", resetHandler)
 	// ListenAndServe on PORT with router
-	err := http.ListenAndServe(PORT, router)
+	err = http.ListenAndServe(configuration.Port, router)
 	if err != nil {
 		log.Fatal(err)
 	}
