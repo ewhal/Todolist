@@ -1,3 +1,4 @@
+// package main is a robust modern todolist service
 package main
 
 import (
@@ -8,16 +9,24 @@ import (
 	"log"
 	"net/http"
 
+	// uniuri for random string generation
 	"github.com/dchest/uniuri"
+	// mysql driver
 	_ "github.com/go-sql-driver/mysql"
+	// mux routing
 	"github.com/gorilla/mux"
+	// securecookie for cookie handling
 	"github.com/gorilla/securecookie"
+	// bcrypt for password hashing
 	"golang.org/x/crypto/bcrypt"
 )
 
 const (
-	PORT     = ":8080"
-	LENGTH   = 12
+	// PORT for golang to listen on
+	PORT = ":8080"
+	// LENGTH todo name length
+	LENGTH = 12
+	// USERNAME database username
 	USERNAME = "root"
 	// PASS database password
 	PASS = ""
@@ -35,12 +44,14 @@ var cookieHandler = securecookie.New(
 	securecookie.GenerateRandomKey(32),
 )
 
+// User struct
 type User struct {
 	ID       int
 	Email    string
 	Password string
 }
 
+// Tasks todo tasks struct
 type Tasks struct {
 	Name      string `json:"name"`
 	Title     string `json:"title"`
@@ -53,9 +64,12 @@ type Tasks struct {
 	Allday    bool   `json:"allday"`
 }
 
+// Page []Tasks struct
 type Page struct {
 	Tasks []Tasks `json:"tasks"`
 }
+
+// Cal fullcalendar struct
 type Cal struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
@@ -65,12 +79,14 @@ type Cal struct {
 	URL         string `json:"url"`
 }
 
+// checkErr logger
 func checkErr(err error) {
 	if err != nil {
 		log.Println(err)
 	}
 }
 
+// genName Random name geneation function
 func genName() string {
 	name := uniuri.NewLen(LENGTH)
 	db, err := sql.Open("mysql", DATABASE)
@@ -85,6 +101,7 @@ func genName() string {
 	return name
 }
 
+// loggedIn returns true if cookie exists
 func loggedIn(r *http.Request) bool {
 	cookie, err := r.Cookie("session")
 	cookieValue := make(map[string]string)
@@ -99,6 +116,7 @@ func loggedIn(r *http.Request) bool {
 
 }
 
+// getEmail returns the users email address from cookie
 func getEmail(r *http.Request) (string, error) {
 	cookie, err := r.Cookie("session")
 	cookieValue := make(map[string]string)
@@ -113,7 +131,9 @@ func getEmail(r *http.Request) (string, error) {
 
 }
 
+// rootHandler root page handler
 func rootHandler(w http.ResponseWriter, r *http.Request) {
+	// check if user is logged in, if not redirect to login page
 	if loggedIn(r) != true {
 		http.Redirect(w, r, "/login", 302)
 	}
@@ -122,7 +142,9 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 	checkErr(err)
 }
 
+// calHandler generates json string that is fullcalendar compatible
 func calHandler(w http.ResponseWriter, r *http.Request) {
+	// check if user is logged in, if not redirect to login page
 	if loggedIn(r) != true {
 		http.Redirect(w, r, "/login", 302)
 	}
@@ -155,7 +177,9 @@ func calHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// taskHandler
 func taskHandler(w http.ResponseWriter, r *http.Request) {
+	// check if user is logged in, if not redirect to login page
 	if loggedIn(r) != true {
 		http.Redirect(w, r, "/login", 302)
 	}
@@ -200,7 +224,8 @@ func todoHandler(w http.ResponseWriter, r *http.Request) {
 		rows.Scan(&public)
 	}
 
-	if loggedIn(r) != true && public == false {
+	// check if user is logged in or if todo is public, if not redirect to login page
+	if loggedIn(r) != true || public == false {
 		http.Redirect(w, r, "/login", 302)
 	}
 	p := Tasks{}
@@ -216,6 +241,7 @@ func todoHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// apitodoHandler
 func apitodoHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	todo := vars["id"]
@@ -231,7 +257,8 @@ func apitodoHandler(w http.ResponseWriter, r *http.Request) {
 		rows.Scan(&public)
 	}
 
-	if loggedIn(r) != true && public == false {
+	// check if user is logged in or if todo is public, if not redirect to login page
+	if loggedIn(r) != true || public == false {
 		http.Redirect(w, r, "/login", 302)
 	}
 	p := Tasks{}
@@ -251,7 +278,9 @@ func apitodoHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// addHandler
 func addHandler(w http.ResponseWriter, r *http.Request) {
+	// check if user is logged if not redirect to login page
 	if loggedIn(r) != true {
 		http.Redirect(w, r, "/login", 302)
 	}
@@ -276,7 +305,9 @@ func addHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// editHandler
 func editHandler(w http.ResponseWriter, r *http.Request) {
+	// check if user is logged if not redirect to login page
 	if loggedIn(r) != true {
 		http.Redirect(w, r, "/login", 302)
 	}
@@ -302,7 +333,9 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// delHandler
 func delHandler(w http.ResponseWriter, r *http.Request) {
+	// check if user is logged if not redirect to login page
 	if loggedIn(r) != true {
 		http.Redirect(w, r, "/login", 302)
 	}
@@ -321,7 +354,9 @@ func delHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// finishHandler
 func finishHandler(w http.ResponseWriter, r *http.Request) {
+	// check if user is logged if not redirect to login page
 	if loggedIn(r) != true {
 		http.Redirect(w, r, "/login", 302)
 	}
@@ -337,14 +372,18 @@ func finishHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// userHandler
 func userHandler(w http.ResponseWriter, r *http.Request) {
+	// check if user is logged if not redirect to login page
 	if loggedIn(r) != true {
 		http.Redirect(w, r, "/login", 302)
 	}
 
 }
 
+// userDelHandler
 func userDelHandler(w http.ResponseWriter, r *http.Request) {
+	// check if user is logged if not redirect to login page
 	if loggedIn(r) != true {
 		http.Redirect(w, r, "/login", 302)
 	}
@@ -375,6 +414,7 @@ func userDelHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// loginHandler
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
@@ -426,6 +466,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// registerHandler
 func registerHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
@@ -457,6 +498,7 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// logoutHandler destroys cookie data and redirects to root
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	cookie := &http.Cookie{
 		Name:   "session",
@@ -469,17 +511,21 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// resetHandler is meant to handle resetting the users password if forgotten
 func resetHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
 func main() {
+	// create new mux router
 	router := mux.NewRouter()
-	router.HandleFunc("/", rootHandler)
 
+	// basic handlers
+	router.HandleFunc("/", rootHandler)
 	router.HandleFunc("/todo", taskHandler)
 	router.HandleFunc("/todo/{id}", todoHandler).Methods("GET")
 
+	// api handlers
 	router.HandleFunc("/api/cal", addHandler).Methods("POST")
 	router.HandleFunc("/api/cal", calHandler).Methods("GET")
 	router.HandleFunc("/api/cal/{id}", apitodoHandler).Methods("GET")
@@ -488,9 +534,11 @@ func main() {
 
 	router.HandleFunc("/finish/{id}", finishHandler).Methods("POST")
 
+	// user handlers
 	router.HandleFunc("/user", userHandler)
 	router.HandleFunc("/user/del", userDelHandler)
 
+	// account handlers
 	router.HandleFunc("/register", registerHandler)
 	router.HandleFunc("/login", loginHandler)
 	router.HandleFunc("/logout", logoutHandler)
