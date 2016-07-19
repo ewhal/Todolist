@@ -334,9 +334,7 @@
 							$('#fullCalModal').modal('hide');
 
 
-							setTimeout(function() {
-								$('#bootstrapModalFullCalendar').fullCalendar( 'rerenderEvents' );
-							}, 4000);
+							$('#bootstrapModalFullCalendar').fullCalendar( 'rerenderEvents' );
 						}
 					});
 					return false;
@@ -347,7 +345,7 @@
 						type: "GET",
 						cache: false,
 						dataType: 'json',
-						success: function (data) { 
+						success: function (data) {
 
 							$('#editModal').modal('show');
 							$('#fullCalModal').modal('hide');
@@ -359,11 +357,11 @@
 							$('#editDueDate').val(str1);
 							$("#editPublic").filter(function() {
 								//may want to use $.trim in here
-								return $(this).text() == data.public; 
-							}).prop('selected', true);           
+								return $(this).text() == data.public;
+							}).prop('selected', true);
 							$("#editAllday").filter(function() {
 								//may want to use $.trim in here
-								return $(this).text() == data.allday; 
+								return $(this).text() == data.allday;
 							}).prop('selected', true);
 
 
@@ -381,9 +379,7 @@
 						success: function(result) {
 
 							$('#editModal').modal('hide');
-							setTimeout(function() {
-								$('#bootstrapModalFullCalendar').fullCalendar( 'rerenderEvents' );
-							}, 4000);
+							$('#bootstrapModalFullCalendar').fullCalendar( 'rerenderEvents' );
 
 						}
 					});
