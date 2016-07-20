@@ -170,8 +170,10 @@ func calHandler(w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 		res := Cal{}
+		// scan from db into Struct
 		rows.Scan(&res.Title, &res.Description, &res.Start, &res.End, &res.Allday, &res.URL)
 
+		// append Cal to array
 		b = append(b, res)
 	}
 	db.Close()
@@ -196,6 +198,7 @@ func taskHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("mysql", DATABASE)
 	checkErr(err)
 
+	// get the users email
 	email, err := getEmail(r)
 	checkErr(err)
 
