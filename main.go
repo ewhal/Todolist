@@ -317,11 +317,14 @@ func addHandler(w http.ResponseWriter, r *http.Request) {
 	email, err := getEmail(r)
 	checkErr(err)
 
+	// open db connection
 	db, err := sql.Open("mysql", DATABASE)
 	checkErr(err)
 	defer db.Close()
 
+	// prepare insert statement
 	query, err := db.Prepare("insert into tasks(name, title, task, duedate, created, email, completed, public, allday) values(?, ?, ?, ?, ?, ?, ?, ?, ?)")
+	// execute insert statement with escaped form values
 	_, err = query.Exec(name, html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), html.EscapeString(created), email, false, html.EscapeString(public), html.EscapeString(allday))
 	checkErr(err)
 
@@ -333,12 +336,16 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 	if loggedIn(r) != true {
 		http.Redirect(w, r, "/login", 302)
 	}
+	// get todo id from url
 	vars := mux.Vars(r)
 	todo := vars["id"]
+
+	// open db connection
 	db, err := sql.Open("mysql", DATABASE)
 	checkErr(err)
 	defer db.Close()
 
+	// form values
 	title := r.FormValue("title")
 	task := r.FormValue("task")
 	created := r.FormValue("created")
@@ -346,10 +353,13 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 	public := r.FormValue("public")
 	allday := r.FormValue("allday")
 
+	// prepare update statement
 	query, err := db.Prepare("update tasks set title=?, task=?, duedate=?, public=?, created=?, allday=? where name=? and email=?")
 	checkErr(err)
+	// get email address from cookie
 	email, err := getEmail(r)
 	checkErr(err)
+	// exec update query with escaped form values
 	_, err = query.Exec(html.EscapeString(title), html.EscapeString(task), html.EscapeString(duedate), html.EscapeString(public), html.EscapeString(created), html.EscapeString(allday), html.EscapeString(todo), email)
 	checkErr(err)
 
@@ -364,10 +374,12 @@ func delHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	todo := vars["id"]
 
+	// open db connection
 	db, err := sql.Open("mysql", DATABASE)
 	checkErr(err)
 	defer db.Close()
 
+	// get email address from cookie
 	email, err := getEmail(r)
 	checkErr(err)
 
