@@ -260,9 +260,11 @@ func todoHandler(w http.ResponseWriter, r *http.Request) {
 
 // apitodoHandler
 func apitodoHandler(w http.ResponseWriter, r *http.Request) {
+	// get todo name
 	vars := mux.Vars(r)
 	todo := vars["id"]
 
+	// open db connection
 	db, err := sql.Open("mysql", DATABASE)
 	checkErr(err)
 	defer db.Close()
@@ -302,13 +304,16 @@ func addHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", 302)
 	}
 
+	// form values
 	title := r.FormValue("title")
 	task := r.FormValue("task")
 	duedate := r.FormValue("duedate")
 	public := r.FormValue("public")
 	created := r.FormValue("created")
 	allday := r.FormValue("allday")
+	// gen post name
 	name := genName()
+	// get email
 	email, err := getEmail(r)
 	checkErr(err)
 
