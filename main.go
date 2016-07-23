@@ -556,7 +556,6 @@ func main() {
 		panic(err)
 	}
 	decoder := json.NewDecoder(file)
-	configuration := Configuration{}
 	err = decoder.Decode(&configuration)
 	if err != nil {
 		panic(err)
